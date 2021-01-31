@@ -1,20 +1,33 @@
 import * as Phaser from 'phaser';
-
-function create() {
-  this.add.text(0, 0, 'hello world!');
-}
+import scenes from './scenes/scenes';
 
 const config = {
   type: Phaser.AUTO,
-  width: 800,
-  height: 600,
-  scene: {
-    preload: () => {
-      console.log('test');
+  width: window.innerWidth, // 800,
+  height: window.innerHeight, // 600,
+  scene: scenes,
+  physics: {
+    default: 'arcade',
+    arcade: {
+      debug: true,
+      gravity: {
+        y: 0,
+      },
     },
-    create,
   },
+  // to get rid of grainy look when we scale up tiles
+  pixelArt: true,
+  // when using floating points phaser will round up to the nearest pixel to render clean
+  roundPixels: true,
 };
 
-const game = new Phaser.Game(config);
-console.log(game);
+class Game extends Phaser.Game {
+  constructor() {
+    super(config);
+    this.scene.start('Boot');
+  }
+}
+
+window.onload = () => {
+  window.game = new Game();
+};

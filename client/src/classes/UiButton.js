@@ -1,4 +1,6 @@
-class UiButton extends Phaser.GameObjects.Container {
+import * as Phaser from 'phaser';
+
+export default class UiButton extends Phaser.GameObjects.Container {
   constructor(scene, x, y, key, hoverKey, text, targetCallback) {
     super(scene, x, y);
     this.scene = scene; // the scene this container will be added to

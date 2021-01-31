@@ -1,6 +1,10 @@
-class MonsterModel {
-  constructor(x,y,bitcoin,spawnerId, frame, health, attack) {
-    this.id = `${spawnerId}-${uuid.v4()}`;
+import { v4 } from 'uuid';
+import Scale from '../utils/scale';
+import { randomNumber } from './utils';
+
+export default class MonsterModel {
+  constructor(x, y, bitcoin, spawnerId, frame, health, attack) {
+    this.id = `${spawnerId}-${v4()}`;
     this.spawnerId = spawnerId;
     this.x = x * Scale.FACTOR;
     this.y = y * Scale.FACTOR;
@@ -11,14 +15,16 @@ class MonsterModel {
     this.attack = attack;
     // console.log('health: '+this.health+'  maxhealth: '+this.maxHealth);
   }
+
   loseHealth(damage) {
     // console.log('spawnerid: '+this.spawnerId+'health: '+this.health+'  maxhealth: '+this.maxHealth+'frame: '+this.frame);
     this.health -= damage;
     // console.log('spawnerid: '+this.spawnerId+'health: '+this.health+'  maxhealth: '+this.maxHealth+'frame: '+this.frame);
   }
+
   move() {
-    const randomPosition = randomNumber(1,8);
-    const distance = 32 * Scale.FACTOR*3;
+    const randomPosition = randomNumber(1, 8);
+    const distance = 32 * Scale.FACTOR * 3;
 
     switch (randomPosition) {
       case 1:
@@ -42,12 +48,12 @@ class MonsterModel {
         this.x -= distance;
         break;
       case 7:
-          this.y += distance;
-          this.x += distance;
+        this.y += distance;
+        this.x += distance;
         break;
       case 8:
-          this.y += distance;
-          this.x -= distance;
+        this.y += distance;
+        this.x -= distance;
         break;
       default:
         console.log('Error: default monster movement reached');

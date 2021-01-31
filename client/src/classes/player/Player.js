@@ -1,5 +1,11 @@
-class Player extends Phaser.Physics.Arcade.Image {
-  constructor (scene, x, y, key, frame) {
+import * as Phaser from 'phaser';
+
+const Scale = {
+  FACTOR: 2,
+};
+
+export default class Player extends Phaser.Physics.Arcade.Image {
+  constructor(scene, x, y, key, frame) {
     super(scene, x, y, key, frame);
     this.scene = scene;
 

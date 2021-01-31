@@ -1,4 +1,9 @@
-class GameManager {
+import Spawner from './Spawner';
+import PlayerModel from './PlayerModel';
+
+import { SpawnerType, Mode, DIFFICULTY } from './utils';
+
+export default class GameManager {
   constructor(scene, mapData) {
     this.scene = scene;
     this.mapData = mapData;
@@ -11,6 +16,7 @@ class GameManager {
     this.chestLocations = {};
     this.monsterLocations = {};
   }
+
   setup() {
     this.parseMapData();
     this.setupEventListener();
@@ -20,7 +26,6 @@ class GameManager {
 
   parseMapData() {
     this.mapData.forEach((layer) => {
-      
       if (layer.name === 'player_locations') {
         layer.objects.forEach((obj) => {
           this.playerLocations.push([obj.x, obj.y]);
@@ -32,7 +37,6 @@ class GameManager {
           } else {
             this.chestLocations[obj.properties.spawner] = [[obj.x, obj.y]];
           }
-          
         });
       } else if (layer.name === 'monster_locations') {
         layer.objects.forEach((obj) => {
@@ -47,7 +51,6 @@ class GameManager {
     // console.log(this.playerLocations);
     // console.log(this.chestLocations);
     // console.log(this.monsterLocations);
-
   }
 
   setupEventListener() {
@@ -65,7 +68,6 @@ class GameManager {
         this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
         this.scene.events.emit('chestRemoved', chestId);
       }
-
     });
     this.scene.events.on('monsterAtttacked', (monsterId, playerId) => {
       // update spawner
@@ -73,12 +75,11 @@ class GameManager {
       // console.log('playerid: '+playerId);
       if (this.monsters[monsterId]) {
         const { bitcoin, attack } = this.monsters[monsterId];
-        this.monsters[monsterId].loseHealth(2*Mode[DIFFICULTY]);
+        this.monsters[monsterId].loseHealth(2 * Mode[DIFFICULTY]);
         // console.log('health' + this.monsters[monsterId].health);
         // check health remove monster if dead
-        
-        if (this.monsters[monsterId].health <= 0) {
 
+        if (this.monsters[monsterId].health <= 0) {
           this.players[playerId].updateBitcoin(bitcoin);
           this.scene.events.emit('updateBalance', this.players[playerId].bitcoin);
           // console.log('health2' + this.monsters[monsterId].health);
@@ -89,37 +90,36 @@ class GameManager {
           this.scene.events.emit('updatePlayerHealth', playerId, this.players[playerId].health);
         } else {
           this.players[playerId].updateHealth(attack);
-          //update player health
+          // update player health
           this.scene.events.emit('updatePlayerHealth', playerId, this.players[playerId].health);
-          //update monster health
+          // update monster health
           this.scene.events.emit('updateMonsterHealth', monsterId, this.monsters[monsterId].health);
 
-          // respawn player if he be ded 
+          // respawn player if he be ded
           if (this.players[playerId].health <= 0) {
             // update balance to take a 50% penalty
             // 10 represents the "radix" i believe this should be 10 for base 10 numbering
-            let reduceAmount = parseInt(-this.players[playerId].bitcoin/2);
+            const reduceAmount = parseInt(-this.players[playerId].bitcoin / 2, 10);
             // console.log(reduceAmount);
             this.players[playerId].updateBitcoin(reduceAmount);
             this.scene.events.emit('updateBalance', this.players[playerId].bitcoin);
-            //respawn
+            // respawn
             this.players[playerId].respawn();
             this.scene.events.emit('respawnPlayer', this.players[playerId]);
           }
         }
       }
-
     });
   }
+
   setupSpawners() {
     const config = {
       spawnInterval: 3000,
       limit: 3,
       spawnerType: '',
-      id: ''
+      id: '',
     };
     let spawner;
-
 
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;
@@ -128,11 +128,10 @@ class GameManager {
         config,
         this.chestLocations[key],
         this.addChest.bind(this),
-        this.deleteChest.bind(this)
+        this.deleteChest.bind(this),
       );
       this.spawners[spawner.id] = spawner;
     });
-
 
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
@@ -143,7 +142,7 @@ class GameManager {
         this.monsterLocations[key],
         this.addMonster.bind(this),
         this.deleteMonster.bind(this),
-        this.moveMonsters.bind(this)
+        this.moveMonsters.bind(this),
       );
       this.spawners[spawner.id] = spawner;
     });
@@ -154,22 +153,26 @@ class GameManager {
     this.players[player.id] = player;
     this.scene.events.emit('spawnPlayer', player);
   }
+
   addChest(chestId, chest) {
     this.chests[chestId] = chest;
     this.scene.events.emit('chestSpawned', chest);
   }
+
   deleteChest(chestId) {
     delete this.chests[chestId];
   }
+
   addMonster(monsterId, monster) {
     this.monsters[monsterId] = monster;
     this.scene.events.emit('monsterSpawned', monster);
   }
+
   deleteMonster(monsterId) {
     delete this.monsters[monsterId];
   }
+
   moveMonsters() {
     this.scene.events.emit('monsterMovement', this.monsters);
   }
 }
-
