@@ -1,4 +1,5 @@
 import * as Phaser from 'phaser';
+import io from 'socket.io-client';
 import scenes from './scenes/scenes';
 
 const config = {
@@ -24,6 +25,8 @@ const config = {
 class Game extends Phaser.Game {
   constructor() {
     super(config);
+    const socket = io('http://localhost:4000');
+    this.globals = { socket };
     this.scene.start('Boot');
   }
 }
