@@ -1,24 +1,23 @@
-const passport = require('passport');
-const localStrategy = require('passport-local');
-const JwtStrategy = require('passport-jwt');
-const UserModel = require('../models/UserModel')
+import passport from 'passport';
+import localStrategy from 'passport-local';
+import JwtStrategy from 'passport-jwt';
+import UserModel from '../models/UserModel';
 
 // passport.use(passport.initialize());
 // passport.use(passport.session());
 passport.use('signup', new localStrategy.Strategy({
   usernameField: 'email',
   passwordField: 'password',
-  passReqToCallback: true
+  passReqToCallback: true,
 }, async (req, email, password, done) => {
-
   try {
     const { username } = req.body;
-    const searchUser = await UserModel.findOne({ username: username});
+    const searchUser = await UserModel.findOne({ username });
     if (searchUser) {
       return done(new Error(`username ${username} taken`));
     }
-    const user = await UserModel.create({email, password, username});
-    
+    const user = await UserModel.create({ email, password, username });
+
     return done(null, user);
   } catch (err) {
     return done(err);
@@ -27,7 +26,7 @@ passport.use('signup', new localStrategy.Strategy({
 
 passport.use('login', new localStrategy.Strategy({
   usernameField: 'email',
-  passwordField: 'password'
+  passwordField: 'password',
 }, async (email, password, done) => {
   try {
     // since email is unique this should only bring back one email
@@ -37,7 +36,7 @@ passport.use('login', new localStrategy.Strategy({
     }
     const valid = await user.isValidPassword(password);
     if (!valid) {
-      return done(new Error('Invalid Password'), false );
+      return done(new Error('Invalid Password'), false);
     }
     return done(null, user);
   } catch (err) {
@@ -55,13 +54,13 @@ passport.use(
         token = req.cookies.jwt;
       }
       return token;
-    }
-  }, 
+    },
+  },
   async (token, done) => {
     try {
       return done(null, token.user);
     } catch (err) {
       return done(err);
     }
-  })
+  }),
 );

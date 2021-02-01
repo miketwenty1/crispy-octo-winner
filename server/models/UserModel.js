@@ -1,5 +1,6 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+/* eslint-disable func-names */
+import mongoose from 'mongoose';
+import bcrypt from 'bcrypt';
 
 const { Schema } = mongoose;
 
@@ -8,27 +9,26 @@ const UserSchema = new Schema({
     type: String,
     required: true,
     unique: true,
-    lowercase: true, 
-    trim: true
+    lowercase: true,
+    trim: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   username: {
     type: String,
-    required: true,// this doesn't seem to work
-    lowercase: true, 
-    trim: true
+    required: true, // this doesn't seem to work
+    lowercase: true,
+    trim: true,
   },
   resetToken: {
-    type: String
+    type: String,
   },
   resetTokenExp: {
-    type: Date
-  }
+    type: Date,
+  },
 });
-
 
 UserSchema.pre('save', async function (next) {
   const hash = await bcrypt.hash(this.password, 10);
@@ -56,5 +56,4 @@ UserSchema.methods.isValidPassword = async function (password) {
 
 const UserModel = mongoose.model('user', UserSchema);
 
-
-module.exports = UserModel;
+export default UserModel;

@@ -7,6 +7,10 @@ export function randomNumber(min, max) {
   return Math.floor(Math.random() * max) + min;
 }
 
+export const Scale = {
+  FACTOR: 2,
+};
+
 export const Mode = {
   EASY: 20,
   MEDIUM: 10,

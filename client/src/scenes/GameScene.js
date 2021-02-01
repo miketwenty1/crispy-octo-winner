@@ -4,11 +4,8 @@ import Chest from '../classes/Chest';
 import Monster from '../classes/Monster';
 import GameManager from '../game_manager/GameManager';
 import GameMap from '../classes/GameMap';
+import { Scale, AUDIO_LEVEL } from '../game_manager/utils';
 
-const AUDIO_LEVEL = 1;
-const Scale = {
-  FACTOR: 2,
-};
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super('Game');
@@ -47,7 +44,7 @@ export default class GameScene extends Phaser.Scene {
     });
     this.playerDamageAudio = this.sound.add('playerDamageAudio', {
       loop: false,
-      volume: AUDIO_LEVEL, // value between 0 and 1
+      volume: AUDIO_LEVEL * 0.5, // value between 0 and 1
     });
     this.playerDeathAudio = this.sound.add('playerDeathAudio', {
       loop: false,
