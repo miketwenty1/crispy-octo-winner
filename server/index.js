@@ -11,7 +11,7 @@ import passport from 'passport';
 import routes from './routes/rest';
 import passwordRoutes from './routes/password';
 import secureRoutes from './routes/secure';
-
+import GameManager from './game_manager/GameManager';
 // require passport auth
 require('./auth/auth');
 
@@ -24,25 +24,8 @@ const io = require('socket.io')(server, {
   },
 });
 
-io.on('connection', (socket) => {
-  // when a player connects
-  console.log('player connected to our game');
-  console.log(socket.id);
-  socket.on('disconnect', (reason) => {
-    // when a player disconnects
-    console.log(`player disconnected to our game ${reason}`);
-    console.log(socket.id);
-  });
-
-  socket.on('newPlayer', (obj) => {
-    console.log(obj);
-    console.log('new player event received on socket');
-    // everyone except original socket
-    socket.broadcast.emit('newPlayer', socket.id, 'everyone but origin socket');
-    // everyone
-    io.emit('newPlayer', socket.id, 'everyone');
-  });
-});
+const gameManager = new GameManager(io);
+gameManager.setup();
 
 console.log(process.env.PORT);
 const port = process.env.PORT || 3000;

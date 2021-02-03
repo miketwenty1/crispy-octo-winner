@@ -7,7 +7,7 @@ const Scale = {
 };
 
 export default class PlayerContainer extends Phaser.GameObjects.Container {
-  constructor(scene, x, y, key, frame, health, maxHealth, id, attackAudio) {
+  constructor(scene, x, y, key, frame, health, maxHealth, id, attackAudio, mainPlayer) {
     super(scene, x, y);
     this.scene = scene;
     this.velocity = 360;
@@ -19,6 +19,7 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.maxHealth = maxHealth;
     this.id = id;
     this.attackAudio = attackAudio;
+    this.mainPlayer = mainPlayer;
 
     this.setSize(32 * Scale.FACTOR, 32 * Scale.FACTOR);
     this.scene.physics.world.enable(this);
@@ -26,8 +27,10 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
     this.body.setAllowGravity(false);
     this.scene.add.existing(this);
 
-    // have the camera follow the player
-    this.scene.cameras.main.startFollow(this);
+    // have the camera follow the player.. but not other players
+    if (this.mainPlayer) {
+      this.scene.cameras.main.startFollow(this);
+    }
 
     this.player = new Player(this.scene, 0, 0, key, frame);
     this.add(this.player);
@@ -127,5 +130,9 @@ export default class PlayerContainer extends Phaser.GameObjects.Container {
       }
     }
     this.updateHealthBar();
+  }
+
+  updateFlipX() {
+    this.player.flipX = this.flipX;
   }
 }

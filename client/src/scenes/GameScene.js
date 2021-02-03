@@ -20,9 +20,43 @@ export default class GameScene extends Phaser.Scene {
   }
 
   listenForSocketEvents() {
-    this.socket.on('newPlayer', (socketId, test) => {
-      // console.log(`new player event in clientz ${socketId} ${test}`);
-      console.log('new player event in clientz', socketId, test);
+    // spawn player game objects
+    this.socket.on('currentPlayers', (players) => {
+      console.log('currentPlayers');
+      console.log(players);
+      Object.keys(players).forEach((id) => {
+        if (players[id].id === this.socket.id) {
+          this.createPlayer(players[id], true);
+          this.addCollisions();
+        } else {
+          this.createPlayer(players[id], false);
+        }
+      });
+    });
+
+    this.socket.on('currentMonsters', (monsters) => {
+      console.log('currentMonsters');
+      console.log(monsters);
+    });
+    this.socket.on('currentChests', (chests) => {
+      console.log('currentChests');
+      console.log(chests);
+    });
+    this.socket.on('spawnPlayer', (player) => {
+      console.log('spawnPlayer');
+      console.log(player);
+      this.createPlayer(player, false);
+    });
+    // when any player moves
+    this.socket.on('playerMove', (player) => {
+      this.otherPlayers.getChildren().forEach((otherPlayer) => {
+        if (player.id === otherPlayer.id) {
+          otherPlayer.flipX = player.flipX;
+          otherPlayer.setPosition(player.x, player.y);
+          otherPlayer.updateHealthBar();
+          otherPlayer.updateFlipX();
+        }
+      });
     });
   }
 
@@ -31,7 +65,7 @@ export default class GameScene extends Phaser.Scene {
     this.createAudio();
     this.createInput();
     this.createGroups();
-    this.createGameManager();
+    // this.createGameManager();
 
     // emit event that a new player joined
 
@@ -41,6 +75,22 @@ export default class GameScene extends Phaser.Scene {
   update() {
     if (this.player) {
       this.player.update(this.cursors);
+    }
+    // if no change then don't emit event only emit on change so server doesn't get flooded with b.s.
+    if (this.player) {
+      const { x, y, flipX } = this.player;
+      if (this.player.oldPosition
+        && (x !== this.player.oldPosition.x
+          || y !== this.player.oldPosition.y
+          || flipX !== this.player.oldPosition.flipX)) {
+        this.socket.emit('playerMovement', { x, y, flipX });
+      }
+      // save old position data
+      this.player.oldPosition = {
+        x: this.player.x,
+        y: this.player.y,
+        flipX: this.player.flipX,
+      };
     }
   }
 
@@ -67,8 +117,8 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  createPlayer(playerObject) {
-    this.player = new PlayerContainer(
+  createPlayer(playerObject, mainPlayer) {
+    const playerGameObject = new PlayerContainer(
       this,
       playerObject.x * Scale.FACTOR,
       playerObject.y * Scale.FACTOR,
@@ -78,7 +128,13 @@ export default class GameScene extends Phaser.Scene {
       playerObject.maxHealth,
       playerObject.id,
       this.playerAttackAudio,
+      mainPlayer, // true if main player
     );
+    if (!mainPlayer) {
+      this.otherPlayers.add(playerGameObject);
+    } else {
+      this.player = playerGameObject;
+    }
   }
 
   createGroups() {
@@ -86,6 +142,8 @@ export default class GameScene extends Phaser.Scene {
     this.monsters = this.physics.add.group();
     // this will auto run if this group has an update method
     this.monsters.runChildUpdate = true;
+    // create an other players group
+    this.otherPlayers = this.physics.add.group();
   }
 
   spawnChest(chestObject) {
@@ -186,10 +244,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createGameManager() {
-    this.events.on('spawnPlayer', (playerObject) => {
-      this.createPlayer(playerObject);
-      this.addCollisions();
-    });
+    // this.events.on('spawnPlayer', (playerObject) => {
+    //   this.createPlayer(playerObject);
+    //   this.addCollisions();
+    // });
+
     this.events.on('chestSpawned', (chest) => {
       this.spawnChest(chest);
     });

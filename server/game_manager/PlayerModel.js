@@ -1,14 +1,12 @@
-import { v4 } from 'uuid';
-
-// in charge of managing game state for player's game
+// container player information like health and balance
 export default class PlayerModel {
-  constructor(spawnLocations) {
+  constructor(playerId, spawnLocations) {
     this.health = 100;
     this.maxHealth = 100;
     this.bitcoin = 0;
-    this.id = `player-${v4()}`;
+    this.id = playerId;
     this.spawnLocations = spawnLocations;
-
+    this.flipX = true;
     const location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)];
     // short hand to set 2 values 1st and 2nd item of location array
     [this.x, this.y] = location;
