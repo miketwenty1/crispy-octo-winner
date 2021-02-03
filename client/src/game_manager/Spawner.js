@@ -71,7 +71,7 @@ export default class Spawner {
       return false;
     });
     if (invalidLocation) {
-      console.log('this seems like a bad idea..but logging here');
+      // console.log('this seems like a bad idea..but logging here');
       return this.pickRandomLocation();
     }
     return location;

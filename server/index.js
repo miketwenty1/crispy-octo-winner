@@ -16,6 +16,36 @@ import secureRoutes from './routes/secure';
 require('./auth/auth');
 
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(server, {
+  cors: {
+    origin: 'http://localhost:8000',
+    methods: ['GET', 'POST'],
+  },
+});
+
+io.on('connection', (socket) => {
+  // when a player connects
+  console.log('player connected to our game');
+  console.log(socket.id);
+  socket.on('disconnect', (reason) => {
+    // when a player disconnects
+    console.log(`player disconnected to our game ${reason}`);
+    console.log(socket.id);
+  });
+
+  socket.on('newPlayer', (obj) => {
+    console.log(obj);
+    console.log('new player event received on socket');
+    // everyone except original socket
+    socket.broadcast.emit('newPlayer', socket.id, 'everyone but origin socket');
+    // everyone
+    io.emit('newPlayer', socket.id, 'everyone');
+  });
+});
+
+console.log(process.env.PORT);
+const port = process.env.PORT || 3000;
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -48,9 +78,6 @@ mongoose.connection.on('error', (err) => {
   console.log(err);
   process.exit(1);
 });
-
-console.log(process.env.PORT);
-const port = process.env.PORT || 3000;
 
 // allow express to use files in public folder
 app.use(express.static(`${__dirname}/public`));
@@ -91,7 +118,7 @@ app.use((err, req, res, next) => {
 mongoose.connection.on('connected', () => {
   console.log('connected to mongo');
 
-  app.listen(port, () => {
+  server.listen(port, () => {
     console.log(`running on port ${port}`);
   });
 });
