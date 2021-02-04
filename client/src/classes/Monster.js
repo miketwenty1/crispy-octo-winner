@@ -42,7 +42,7 @@ export default class Monster extends Phaser.Physics.Arcade.Image {
     this.healthBar.fillRect(this.x, this.y - 8, 64 * Scale.FACTOR * (this.health / this.maxHealth), 5);
   }
 
-  updatetHealth(health) {
+  updateHealth(health) {
     this.health = health;
     this.updateHealthBar();
   }
