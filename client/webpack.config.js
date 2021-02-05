@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const path = require('path');
 const webpack = require('webpack');
 
@@ -6,26 +8,27 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'build'),
     publicPath: '/build/',
-    filename: 'project.bundle.js'
+    filename: 'project.bundle.js',
   },
   module: {
     rules: [
       {
         test: /\.js$/,
-        use: { loader: 'babel-loader'},
-        exclude: /node_modules/
+        use: { loader: 'babel-loader' },
+        exclude: /node_modules/,
       },
       {
         test: [/\.vert$/, /\.frag$/],
-        use: 'raw-loader'
-      }
-    ]
+        use: 'raw-loader',
+      },
+    ],
   },
   plugins: [
     new webpack.DefinePlugin({
-      // phaser plugins.
-      'CANVAS_RENDERED': JSON.stringify(true),
-      'WEBGL_RENDERED': JSON.stringify(true)
-    })
-  ]
+      CANVAS_RENDERER: JSON.stringify(true),
+      WEBGL_RENDERER: JSON.stringify(true),
+      SERVER_URL: JSON.stringify(process.env.SERVER_URL),
+      TOKEN_INTERVAL: JSON.stringify(process.env.TOKEN_INTERVAL),
+    }),
+  ],
 };
