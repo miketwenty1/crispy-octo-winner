@@ -1,5 +1,5 @@
 import PlayerModel from './PlayerModel';
-import * as levelData from '../public/assets/level/large_level.json';
+import * as levelData from '../../public/assets/level/large_level.json';
 import Spawner from './Spawner';
 import { SpawnerType, Mode, DIFFICULTY } from './utils';
 // in charge of managing game state for player's game
