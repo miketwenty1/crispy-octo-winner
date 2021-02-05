@@ -101,7 +101,7 @@ router.post('/forgot-password', /*#__PURE__*/function () {
               // this is what will populate variables in the email
               context: {
                 name: user.username,
-                url: "http://localhost:".concat(process.env.PORT || 3000, "/reset-password.html?token=").concat(token)
+                url: "http://https://friday-nightz.herokuapp.com:".concat(process.env.PORT || 3000, "/reset-password.html?token=").concat(token)
               }
             };
             _context.next = 15;

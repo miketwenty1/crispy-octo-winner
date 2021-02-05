@@ -60,7 +60,7 @@ router.post('/forgot-password', async (req, res) => {
       // this is what will populate variables in the email
       context: {
         name: user.username,
-        url: `http://localhost:${process.env.PORT || 3000}/reset-password.html?token=${token}`,
+        url: `http://https://friday-nightz.herokuapp.com:${process.env.PORT || 3000}/reset-password.html?token=${token}`,
       },
     };
     await smtpTransport.sendMail(emailOptions);

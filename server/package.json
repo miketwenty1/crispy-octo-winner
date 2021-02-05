@@ -5,7 +5,7 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/miketwenty1/lumegume.git"
+    "url": "git+https://github.com/miketwenty1/crispy-octo-winner.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
