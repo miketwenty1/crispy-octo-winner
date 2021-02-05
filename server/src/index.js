@@ -63,10 +63,10 @@ mongoose.connection.on('error', (err) => {
 });
 
 // allow express to use files in public folder
-app.use(express.static(`${__dirname}/public`));
+app.use(express.static(`${__dirname}/../public`));
 
 app.get('/', (req, res) => {
-  res.send(`${__dirname}/index.html`);
+  res.send(`${__dirname}/../index.html`);
 });
 
 // setup routes
