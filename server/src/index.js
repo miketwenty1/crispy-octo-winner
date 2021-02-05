@@ -19,7 +19,7 @@ const app = express();
 const server = require('http').Server(app);
 const io = require('socket.io')(server, {
   cors: {
-    origin: 'http://localhost:8000',
+    origin: process.env.CORS_ORIGIN,
     methods: ['GET', 'POST'],
   },
 });
