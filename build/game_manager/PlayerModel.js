@@ -15,7 +15,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 // container player information like health and balance
 var PlayerModel = /*#__PURE__*/function () {
-  function PlayerModel(playerId, spawnLocations, players) {
+  function PlayerModel(playerId, spawnLocations, players, username) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
     this.health = 100;
     this.maxHealth = 100;
@@ -31,6 +31,7 @@ var PlayerModel = /*#__PURE__*/function () {
 
     this.x = _location[0];
     this.y = _location[1];
+    this.username = username;
   }
 
   (0, _createClass2["default"])(PlayerModel, [{

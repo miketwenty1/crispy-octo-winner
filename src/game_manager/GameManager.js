@@ -69,7 +69,8 @@ export default class GameManager {
           // validate token
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           // get players name
-          const { username } = decoded.username;
+          console.log(`new player, with decoded value of ${JSON.stringify(decoded)}`);
+          const { username } = decoded.user;
           this.spawnPlayer(socket.id, username);
 
           // send players to new player

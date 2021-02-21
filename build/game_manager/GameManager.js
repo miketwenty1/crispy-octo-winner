@@ -13,6 +13,8 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
+var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
+
 var _PlayerModel = _interopRequireDefault(require("./PlayerModel"));
 
 var levelData = _interopRequireWildcard(require("../../public/assets/level/large_level.json"));
@@ -91,17 +93,30 @@ var GameManager = /*#__PURE__*/function () {
           console.log("player disconnected from game because: ".concat(reason));
           console.log(socket.id);
         });
-        socket.on('newPlayer', function () {
-          _this2.spawnPlayer(socket.id); // send players to new player
+        socket.on('newPlayer', function (token) {
+          try {
+            // validate token
+            var decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET); // get players name
 
 
-          socket.emit('currentPlayers', _this2.players); // send monsters to new player
+            console.log("new player, with decoded value of ".concat(JSON.stringify(decoded)));
+            var username = decoded.user.username;
 
-          socket.emit('currentMonsters', _this2.monsters); // send chests to new player
+            _this2.spawnPlayer(socket.id, username); // send players to new player
 
-          socket.emit('currentChests', _this2.chests); // send new player to all players
 
-          socket.broadcast.emit('spawnPlayer', _this2.players[socket.id]);
+            socket.emit('currentPlayers', _this2.players); // send monsters to new player
+
+            socket.emit('currentMonsters', _this2.monsters); // send chests to new player
+
+            socket.emit('currentChests', _this2.chests); // send new player to all players
+
+            socket.broadcast.emit('spawnPlayer', _this2.players[socket.id]);
+          } catch (err) {
+            // reject login
+            console.log("err with validating jwt token ".concat(err.message));
+            socket.emit('invalidToken');
+          }
         });
         socket.on('playerMovement', function (playerData) {
           if (_this2.players[socket.id]) {
@@ -243,8 +258,8 @@ var GameManager = /*#__PURE__*/function () {
     }
   }, {
     key: "spawnPlayer",
-    value: function spawnPlayer(playerId) {
-      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players);
+    value: function spawnPlayer(playerId, username) {
+      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, username);
       this.players[playerId] = player;
     }
   }, {

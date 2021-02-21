@@ -136,7 +136,7 @@ router.post('/login', /*#__PURE__*/function () {
                           var body = {
                             _id: user._id,
                             email: user.email,
-                            name: user.username
+                            username: user.username
                           };
 
                           var token = _jsonwebtoken["default"].sign({
@@ -160,8 +160,7 @@ router.post('/login', /*#__PURE__*/function () {
                             refreshToken: refreshToken,
                             email: user.email,
                             _id: user._id,
-                            name: user.name // username
-
+                            username: user.username
                           }; // send token back to user
 
                           return res.status(200).json({
@@ -213,7 +212,7 @@ router.post('/token', function (req, res) {
     var body = {
       email: tokenList[refreshToken].email,
       _id: tokenList[refreshToken]._id,
-      name: tokenList[refreshToken].name
+      username: tokenList[refreshToken].username
     };
 
     var token = _jsonwebtoken["default"].sign({
