@@ -1,6 +1,6 @@
 // container player information like health and balance
 export default class PlayerModel {
-  constructor(playerId, spawnLocations, players) {
+  constructor(playerId, spawnLocations, players, username) {
     this.health = 100;
     this.maxHealth = 100;
     this.bitcoin = 0;
@@ -12,6 +12,7 @@ export default class PlayerModel {
     const location = this.generateLocation(players);
     // short hand to set 2 values 1st and 2nd item of location array
     [this.x, this.y] = location;
+    this.username = username;
   }
 
   updateBitcoin(bitcoin) {
