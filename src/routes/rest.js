@@ -1,6 +1,7 @@
 import express from 'express';
 import passport from 'passport';
 import jwt from 'jsonwebtoken';
+import 'dotenv/config';
 
 // this is going to be in memory tokenlist.. better to probably write this to a db
 const tokenList = {};
@@ -127,6 +128,11 @@ router.post('/token', (req, res) => {
     tokenList[refreshToken].token = token;
     res.status(200).json({ token, status: 200 });
   } else {
+    console.log('refreshToken');
+    console.log(refreshToken);
+    console.log('tokenList');
+    console.log(tokenList);
+
     res.status(401).json({ message: 'unauthorized', status: 401 });
   }
 });

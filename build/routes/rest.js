@@ -17,6 +17,8 @@ var _passport = _interopRequireDefault(require("passport"));
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
+require("dotenv/config");
+
 // this is going to be in memory tokenlist.. better to probably write this to a db
 var tokenList = {};
 
@@ -228,6 +230,10 @@ router.post('/token', function (req, res) {
       status: 200
     });
   } else {
+    console.log('refreshToken');
+    console.log(refreshToken);
+    console.log('tokenList');
+    console.log(tokenList);
     res.status(401).json({
       message: 'unauthorized',
       status: 401

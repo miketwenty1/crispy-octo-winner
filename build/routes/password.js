@@ -23,6 +23,8 @@ var _crypto = _interopRequireDefault(require("crypto"));
 
 var _UserModel = _interopRequireDefault(require("../models/UserModel"));
 
+require("dotenv/config");
+
 var email = process.env.EMAIL;
 var password = process.env.EMAIL_PASSWORD;
 
@@ -38,10 +40,10 @@ var handlebarsOptions = {
   viewEngine: {
     extName: '.bhs',
     defaultLayout: null,
-    partialsDir: './templates/',
-    layoutsDir: './templates/'
+    partialsDir: './src/templates/',
+    layoutsDir: './src/templates/'
   },
-  viewPath: _path["default"].resolve('./templates/'),
+  viewPath: _path["default"].resolve('./src/templates/'),
   extName: '.html'
 };
 smtpTransport.use('compile', (0, _nodemailerExpressHandlebars["default"])(handlebarsOptions));
@@ -101,7 +103,7 @@ router.post('/forgot-password', /*#__PURE__*/function () {
               // this is what will populate variables in the email
               context: {
                 name: user.username,
-                url: "".concat(process.env.SERVER_URL, ":").concat(process.env.PORT || 3000, "/reset-password.html?token=").concat(token)
+                url: "".concat(process.env.SERVER_URL, ":").concat(process.env.RESET_PORT || 3000, "/?token=").concat(token, "&scene=resetPassword")
               }
             };
             _context.next = 15;

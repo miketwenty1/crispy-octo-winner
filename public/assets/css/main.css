@@ -1,17 +1,17 @@
 .input-div {
   width: 100%;
   position: fixed;
-  top: 200px;
-  left: 33%;
+  top: 100px;
+  left: 10%;
 }
 
 .form-label {
   color: white;
-  font-size: 32pt;
+  font-size: 20pt;
 }
 
 .login-input {
-  width: 400px;
-  height: 40px;
-  font-size:20pt;
+  width: 80%;
+  height: 20px;
+  font-size: 15pt;
 }

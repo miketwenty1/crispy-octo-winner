@@ -4,6 +4,7 @@ import nodemailer from 'nodemailer';
 import path from 'path';
 import crypto from 'crypto';
 import UserModel from '../models/UserModel';
+import 'dotenv/config';
 
 const email = process.env.EMAIL;
 const password = process.env.EMAIL_PASSWORD;
@@ -19,10 +20,10 @@ const handlebarsOptions = {
   viewEngine: {
     extName: '.bhs',
     defaultLayout: null,
-    partialsDir: './templates/',
-    layoutsDir: './templates/',
+    partialsDir: './src/templates/',
+    layoutsDir: './src/templates/',
   },
-  viewPath: path.resolve('./templates/'),
+  viewPath: path.resolve('./src/templates/'),
   extName: '.html',
 };
 
@@ -60,7 +61,7 @@ router.post('/forgot-password', async (req, res) => {
       // this is what will populate variables in the email
       context: {
         name: user.username,
-        url: `${process.env.SERVER_URL}:${process.env.PORT || 3000}/reset-password.html?token=${token}`,
+        url: `${process.env.SERVER_URL}:${process.env.RESET_PORT || 3000}/?token=${token}&scene=resetPassword`,
       },
     };
     await smtpTransport.sendMail(emailOptions);
