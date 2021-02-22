@@ -64,14 +64,15 @@ export default class GameManager {
         console.log(socket.id);
       });
 
-      socket.on('newPlayer', (token) => {
+      socket.on('newPlayer', (token, frame) => {
         try {
           // validate token
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
           // get players name
           console.log(`new player, with decoded value of ${JSON.stringify(decoded)}`);
+          console.log(`this is the frame going to the server from newPlayer on socket ${frame}`);
           const { username } = decoded.user;
-          this.spawnPlayer(socket.id, username);
+          this.spawnPlayer(socket.id, username, frame);
 
           // send players to new player
           socket.emit('currentPlayers', this.players);
@@ -220,8 +221,8 @@ export default class GameManager {
     });
   }
 
-  spawnPlayer(playerId, username) {
-    const player = new PlayerModel(playerId, this.playerLocations, this.players, username);
+  spawnPlayer(playerId, username, frame) {
+    const player = new PlayerModel(playerId, this.playerLocations, this.players, username, frame);
     this.players[playerId] = player;
   }
 

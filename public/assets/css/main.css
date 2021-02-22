@@ -1,8 +1,15 @@
+/* 0 margin with html and body */
+html, body {
+  margin: 0;
+}
+
 .input-div {
   width: 100%;
   position: fixed;
-  top: 100px;
-  left: 10%;
+  top: 20%;
+  /* top: 100px; */
+  /* left: %; */
+  text-align: center;
 }
 
 .form-label {
@@ -11,7 +18,18 @@
 }
 
 .login-input {
-  width: 80%;
+  width: 50%;
   height: 20px;
   font-size: 15pt;
+}
+
+@media screen and (max-height: 600px) {
+  .input-div {
+    top: 0%;
+    left: 0%;
+  }
+  .login-input {
+    right: 0%;
+    bottom: 0%;
+  }
 }
