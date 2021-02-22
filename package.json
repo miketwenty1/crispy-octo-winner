@@ -9,14 +9,13 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "nodemon": "npx nodemon index.js --exec babel-node",
+    "nodemon": "npx nodemon src/index.js --exec babel-node",
     "lint": "npx eslint ./ --fix",
     "mongo:up": "docker-compose up -d",
     "mongo:down": "docker-compose down",
     "clean": "rm -rf build && mkdir build",
     "build": "babel -d ./build ./src -s",
     "start": "npm run clean && npm run build && node ./build/index.js"
-
   },
   "engines": {
     "node": "12.14.1"
