@@ -93,16 +93,17 @@ var GameManager = /*#__PURE__*/function () {
           console.log("player disconnected from game because: ".concat(reason));
           console.log(socket.id);
         });
-        socket.on('newPlayer', function (token) {
+        socket.on('newPlayer', function (token, frame) {
           try {
             // validate token
             var decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET); // get players name
 
 
             console.log("new player, with decoded value of ".concat(JSON.stringify(decoded)));
+            console.log("this is the frame going to the server from newPlayer on socket ".concat(frame));
             var username = decoded.user.username;
 
-            _this2.spawnPlayer(socket.id, username); // send players to new player
+            _this2.spawnPlayer(socket.id, username, frame); // send players to new player
 
 
             socket.emit('currentPlayers', _this2.players); // send monsters to new player
@@ -258,8 +259,8 @@ var GameManager = /*#__PURE__*/function () {
     }
   }, {
     key: "spawnPlayer",
-    value: function spawnPlayer(playerId, username) {
-      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, username);
+    value: function spawnPlayer(playerId, username, frame) {
+      var player = new _PlayerModel["default"](playerId, this.playerLocations, this.players, username, frame);
       this.players[playerId] = player;
     }
   }, {
