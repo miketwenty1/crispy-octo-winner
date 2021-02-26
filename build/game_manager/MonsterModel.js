@@ -16,30 +16,30 @@ var _uuid = require("uuid");
 var _utils = require("./utils");
 
 var MonsterModel = /*#__PURE__*/function () {
-  function MonsterModel(x, y, bitcoin, spawnerId, frame, health, attack) {
+  function MonsterModel(x, y, bitcoin, spawnerId, frame, health, attack, mVelocity) {
     (0, _classCallCheck2["default"])(this, MonsterModel);
     this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
     this.spawnerId = spawnerId;
-    this.x = x * _utils.Scale.FACTOR;
-    this.y = y * _utils.Scale.FACTOR;
+    this.x = x;
+    this.y = y;
     this.bitcoin = bitcoin;
     this.frame = frame;
     this.health = health;
     this.maxHealth = health;
-    this.attack = attack; // console.log('health: '+this.health+'  maxhealth: '+this.maxHealth);
+    this.attack = attack;
+    this.mVelocity = mVelocity;
   }
 
   (0, _createClass2["default"])(MonsterModel, [{
     key: "loseHealth",
     value: function loseHealth(damage) {
-      // console.log('spawnerid: '+this.spawnerId+'health: '+this.health+'  maxhealth: '+this.maxHealth+'frame: '+this.frame);
-      this.health -= damage; // console.log('spawnerid: '+this.spawnerId+'health: '+this.health+'  maxhealth: '+this.maxHealth+'frame: '+this.frame);
+      this.health -= damage;
     }
   }, {
     key: "move",
     value: function move() {
       var randomPosition = (0, _utils.randomNumber)(1, 8);
-      var distance = 32 * _utils.Scale.FACTOR * 3;
+      var distance = 0; //32 * Scale.FACTOR * 3;
 
       switch (randomPosition) {
         case 1:

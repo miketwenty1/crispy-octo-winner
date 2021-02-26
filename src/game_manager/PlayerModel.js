@@ -25,7 +25,6 @@ export default class PlayerModel {
     if (this.health > this.maxHealth) {
       this.health = this.maxHealth;
     }
-    // console.log('damage was '+damage+ ', now health is '+this.health);
   }
 
   respawn(players) {

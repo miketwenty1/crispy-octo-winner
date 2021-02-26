@@ -26,3 +26,10 @@ export const Direction = {
   UP: 'UP',
   DOWN: 'DOWN',
 };
+
+// right now only default used
+export const SpawnInterval = {
+  CHEST: 30000,
+  MONSTERS: 5000,
+  DEFAULT: 10000,
+};

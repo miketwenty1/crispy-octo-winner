@@ -1,29 +1,27 @@
 import { v4 } from 'uuid';
-import { randomNumber, Scale } from './utils';
+import { randomNumber } from './utils';
 
 export default class MonsterModel {
-  constructor(x, y, bitcoin, spawnerId, frame, health, attack) {
+  constructor(x, y, bitcoin, spawnerId, frame, health, attack, mVelocity) {
     this.id = `${spawnerId}-${v4()}`;
     this.spawnerId = spawnerId;
-    this.x = x * Scale.FACTOR;
-    this.y = y * Scale.FACTOR;
+    this.x = x;
+    this.y = y;
     this.bitcoin = bitcoin;
     this.frame = frame;
     this.health = health;
     this.maxHealth = health;
     this.attack = attack;
-    // console.log('health: '+this.health+'  maxhealth: '+this.maxHealth);
+    this.mVelocity = mVelocity;
   }
 
   loseHealth(damage) {
-    // console.log('spawnerid: '+this.spawnerId+'health: '+this.health+'  maxhealth: '+this.maxHealth+'frame: '+this.frame);
     this.health -= damage;
-    // console.log('spawnerid: '+this.spawnerId+'health: '+this.health+'  maxhealth: '+this.maxHealth+'frame: '+this.frame);
   }
 
   move() {
     const randomPosition = randomNumber(1, 8);
-    const distance = 32 * Scale.FACTOR * 3;
+    const distance = 0; //32 * Scale.FACTOR * 3;
 
     switch (randomPosition) {
       case 1:

@@ -47,8 +47,7 @@ var PlayerModel = /*#__PURE__*/function () {
 
       if (this.health > this.maxHealth) {
         this.health = this.maxHealth;
-      } // console.log('damage was '+damage+ ', now health is '+this.health);
-
+      }
     }
   }, {
     key: "respawn",

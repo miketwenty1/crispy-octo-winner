@@ -2,7 +2,9 @@ import jwt from 'jsonwebtoken';
 import PlayerModel from './PlayerModel';
 import * as levelData from '../../public/assets/level/large_level.json';
 import Spawner from './Spawner';
-import { SpawnerType, Mode, DIFFICULTY } from './utils';
+import {
+  SpawnerType, Mode, DIFFICULTY, Scale, SpawnInterval,
+} from './utils';
 // in charge of managing game state for player's game
 export default class GameManager {
   constructor(io) {
@@ -27,22 +29,22 @@ export default class GameManager {
     this.levelData.layers.forEach((layer) => {
       if (layer.name === 'player_locations') {
         layer.objects.forEach((obj) => {
-          this.playerLocations.push([obj.x, obj.y]);
+          this.playerLocations.push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
         });
       } else if (layer.name === 'monster_locations') {
         layer.objects.forEach((obj) => {
-          if (this.monsterLocations[obj.properties.spawner]) {
-            this.monsterLocations[obj.properties.spawner].push([obj.x, obj.y]);
+          if (this.monsterLocations[obj.properties[0].value]) {
+            this.monsterLocations[obj.properties[0].value].push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
           } else {
-            this.monsterLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+            this.monsterLocations[obj.properties[0].value] = [[obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]];
           }
         });
       } else if (layer.name === 'chest_locations') {
         layer.objects.forEach((obj) => {
-          if (this.chestLocations[obj.properties.spawner]) {
-            this.chestLocations[obj.properties.spawner].push([obj.x, obj.y]);
+          if (this.chestLocations[obj.properties[0].value]) {
+            this.chestLocations[obj.properties[0].value].push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
           } else {
-            this.chestLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+            this.chestLocations[obj.properties[0].value] = [[obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]];
           }
         });
       }
@@ -187,13 +189,12 @@ export default class GameManager {
 
   setupSpawners() {
     const config = {
-      spawnInterval: 3000,
+      spawnInterval: SpawnInterval.DEFAULT,
       limit: 3,
       spawnerType: '',
       id: '',
     };
     let spawner;
-
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;
       config.spawnerType = SpawnerType.CHEST;

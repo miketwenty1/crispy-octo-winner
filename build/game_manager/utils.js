@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.randomNumber = randomNumber;
-exports.Direction = exports.AUDIO_LEVEL = exports.DIFFICULTY = exports.Mode = exports.Scale = exports.SpawnerType = void 0;
+exports.SpawnInterval = exports.Direction = exports.AUDIO_LEVEL = exports.DIFFICULTY = exports.Mode = exports.Scale = exports.SpawnerType = void 0;
 var SpawnerType = {
   MONSTER: 'MONSTER',
   CHEST: 'CHEST'
@@ -35,6 +35,13 @@ var Direction = {
   LEFT: 'LEFT',
   UP: 'UP',
   DOWN: 'DOWN'
-};
+}; // right now only default used
+
 exports.Direction = Direction;
+var SpawnInterval = {
+  CHEST: 30000,
+  MONSTERS: 5000,
+  DEFAULT: 10000
+};
+exports.SpawnInterval = SpawnInterval;
 //# sourceMappingURL=utils.js.map

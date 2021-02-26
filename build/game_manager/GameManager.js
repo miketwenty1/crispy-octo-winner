@@ -53,22 +53,22 @@ var GameManager = /*#__PURE__*/function () {
       this.levelData.layers.forEach(function (layer) {
         if (layer.name === 'player_locations') {
           layer.objects.forEach(function (obj) {
-            _this.playerLocations.push([obj.x, obj.y]);
+            _this.playerLocations.push([obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]);
           });
         } else if (layer.name === 'monster_locations') {
           layer.objects.forEach(function (obj) {
-            if (_this.monsterLocations[obj.properties.spawner]) {
-              _this.monsterLocations[obj.properties.spawner].push([obj.x, obj.y]);
+            if (_this.monsterLocations[obj.properties[0].value]) {
+              _this.monsterLocations[obj.properties[0].value].push([obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]);
             } else {
-              _this.monsterLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+              _this.monsterLocations[obj.properties[0].value] = [[obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]];
             }
           });
         } else if (layer.name === 'chest_locations') {
           layer.objects.forEach(function (obj) {
-            if (_this.chestLocations[obj.properties.spawner]) {
-              _this.chestLocations[obj.properties.spawner].push([obj.x, obj.y]);
+            if (_this.chestLocations[obj.properties[0].value]) {
+              _this.chestLocations[obj.properties[0].value].push([obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]);
             } else {
-              _this.chestLocations[obj.properties.spawner] = [[obj.x, obj.y]];
+              _this.chestLocations[obj.properties[0].value] = [[obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]];
             }
           });
         }
@@ -238,7 +238,7 @@ var GameManager = /*#__PURE__*/function () {
       var _this3 = this;
 
       var config = {
-        spawnInterval: 3000,
+        spawnInterval: _utils.SpawnInterval.DEFAULT,
         limit: 3,
         spawnerType: '',
         id: ''

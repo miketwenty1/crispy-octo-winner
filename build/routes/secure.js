@@ -38,8 +38,7 @@ router.post('/chat', /*#__PURE__*/function () {
 
           case 4:
             message = req.body.message;
-            email = req.user.email; // console.log(`${JSON.stringify(req.user.name)}: ${req.body.message}`);
-
+            email = req.user.email;
             _context.next = 8;
             return _ChatModel["default"].create({
               email: email,

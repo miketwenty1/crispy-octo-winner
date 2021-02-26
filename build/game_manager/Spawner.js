@@ -59,7 +59,7 @@ var Spawner = /*#__PURE__*/function () {
   }, {
     key: "spawnChest",
     value: function spawnChest() {
-      var location = this.pickRandomLocation();
+      var location = this.pickRandomLocation('chest', 1);
       var chest = new _ChestModel["default"](location[0], location[1], (0, _utils.randomNumber)(1, 21), this.id);
       this.objectsCreated.push(chest);
       this.addObject(chest.id, chest);
@@ -70,16 +70,17 @@ var Spawner = /*#__PURE__*/function () {
       var monsterNum = (0, _utils.randomNumber)(0, 20);
       var attack = (monsterNum + 1) * 2;
       var health = (monsterNum + 1) * 4;
-      var location = this.pickRandomLocation(); // console.log('health: '+health);
+      var mVelocity = 0; // (monsterNum + 1) / (0.1 * monsterNum);
 
+      var location = this.pickRandomLocation('monster', 1);
       var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(21, 21 + attack + health), // coins drop more powerful more likely to drop coins
-      this.id, monsterNum, health, attack);
+      this.id, monsterNum, health, attack, mVelocity);
       this.objectsCreated.push(monster);
       this.addObject(monster.id, monster);
     }
   }, {
     key: "pickRandomLocation",
-    value: function pickRandomLocation() {
+    value: function pickRandomLocation(who, num) {
       var location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)]; // some used in an interesting way here
 
       var invalidLocation = this.objectsCreated.some(function (obj) {
@@ -91,8 +92,8 @@ var Spawner = /*#__PURE__*/function () {
       });
 
       if (invalidLocation) {
-        // console.log('this seems like a bad idea..but logging here');
-        return this.pickRandomLocation();
+        console.log("location from ".concat(who, " with num: ").concat(num));
+        return this.pickRandomLocation(who, num + 1);
       }
 
       return location;

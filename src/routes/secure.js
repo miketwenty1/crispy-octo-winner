@@ -12,7 +12,6 @@ router.post('/chat', async (req, res) => {
   } else {
     const { message } = req.body;
     const { email } = req.user;
-    // console.log(`${JSON.stringify(req.user.name)}: ${req.body.message}`);
     const chat = await ChatModel.create({ email, message });
     res.status(200).json({
       chat,

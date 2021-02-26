@@ -22,11 +22,7 @@ require("dotenv/config");
 // this is going to be in memory tokenlist.. better to probably write this to a db
 var tokenList = {};
 
-var router = _express["default"].Router(); // router.get('/', (req, res) => {
-//   // console.log(req);
-//   res.send('HAVE FUN STAYING POOR!');
-// });
-
+var router = _express["default"].Router();
 
 function processLogoutRequest(req, res) {
   if (req.cookies) {
@@ -91,8 +87,6 @@ router.post('/compute', function (req, res, next) {
   } else {
     next(new Error('testing 500s')); // res.json('value too low or something wrong')
   }
-
-  console.log(req.body);
 });
 router.post('/login', /*#__PURE__*/function () {
   var _ref2 = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee3(req, res, next) {
@@ -229,10 +223,6 @@ router.post('/token', function (req, res) {
       status: 200
     });
   } else {
-    console.log('refreshToken');
-    console.log(refreshToken);
-    console.log('tokenList');
-    console.log(tokenList);
     res.status(401).json({
       message: 'unauthorized',
       status: 401

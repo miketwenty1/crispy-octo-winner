@@ -7,11 +7,6 @@ import 'dotenv/config';
 const tokenList = {};
 
 const router = express.Router();
-
-// router.get('/', (req, res) => {
-//   // console.log(req);
-//   res.send('HAVE FUN STAYING POOR!');
-// });
 function processLogoutRequest(req, res) {
   if (req.cookies) {
     const refreshToken = req.cookies.refreshJwt;
@@ -53,8 +48,6 @@ router.post('/compute', (req, res, next) => {
   } else {
     next(new Error('testing 500s')); // res.json('value too low or something wrong')
   }
-
-  console.log(req.body);
 });
 
 router.post('/login', async (req, res, next) => {
@@ -128,11 +121,6 @@ router.post('/token', (req, res) => {
     tokenList[refreshToken].token = token;
     res.status(200).json({ token, status: 200 });
   } else {
-    console.log('refreshToken');
-    console.log(refreshToken);
-    console.log('tokenList');
-    console.log(tokenList);
-
     res.status(401).json({ message: 'unauthorized', status: 401 });
   }
 });

@@ -1,4 +1,4 @@
-import { SpawnerType, randomNumber } from './utils';
+import { Scale, SpawnerType, randomNumber } from './utils';
 import ChestModel from './ChestModel';
 import MonsterModel from './MonsterModel';
 
@@ -36,7 +36,7 @@ export default class Spawner {
   }
 
   spawnChest() {
-    const location = this.pickRandomLocation();
+    const location = this.pickRandomLocation('chest', 1);
     const chest = new ChestModel(location[0], location[1], randomNumber(1, 21), this.id);
     this.objectsCreated.push(chest);
     this.addObject(chest.id, chest);
@@ -46,8 +46,8 @@ export default class Spawner {
     const monsterNum = randomNumber(0, 20);
     const attack = (monsterNum + 1) * 2;
     const health = (monsterNum + 1) * 4;
-    const location = this.pickRandomLocation();
-    // console.log('health: '+health);
+    const mVelocity = 0; // (monsterNum + 1) / (0.1 * monsterNum);
+    const location = this.pickRandomLocation('monster', 1);
     const monster = new MonsterModel(
       location[0],
       location[1],
@@ -56,12 +56,13 @@ export default class Spawner {
       monsterNum,
       health,
       attack,
+      mVelocity,
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);
   }
 
-  pickRandomLocation() {
+  pickRandomLocation(who, num) {
     const location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)];
     // some used in an interesting way here
     const invalidLocation = this.objectsCreated.some((obj) => {
@@ -71,8 +72,8 @@ export default class Spawner {
       return false;
     });
     if (invalidLocation) {
-      // console.log('this seems like a bad idea..but logging here');
-      return this.pickRandomLocation();
+      console.log(`location from ${who} with num: ${num}`);
+      return this.pickRandomLocation(who, num + 1);
     }
     return location;
   }
