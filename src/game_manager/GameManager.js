@@ -3,7 +3,7 @@ import PlayerModel from './PlayerModel';
 import * as levelData from '../../public/assets/level/large_level.json';
 import Spawner from './Spawner';
 import {
-  SpawnerType, Mode, DIFFICULTY, Scale, SpawnInterval,
+  SpawnerType, Mode, DIFFICULTY, Scale, Intervals,
 } from './utils';
 // in charge of managing game state for player's game
 export default class GameManager {
@@ -16,6 +16,7 @@ export default class GameManager {
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
+    this.monsterCount = 0;
   }
 
   setup() {
@@ -116,7 +117,7 @@ export default class GameManager {
           this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
         }
       });
-      socket.on('monsterAtttacked', (monsterId) => {
+      socket.on('monster', (monsterId) => {
         // update spawner
         // console.log('debug: '+ Object.keys(this.players[playerId]));
         // console.log('playerid: '+playerId);
@@ -189,7 +190,7 @@ export default class GameManager {
 
   setupSpawners() {
     const config = {
-      spawnInterval: SpawnInterval.DEFAULT,
+      spawnInterval: Intervals.DEFAULT,
       limit: 3,
       spawnerType: '',
       id: '',
@@ -210,7 +211,6 @@ export default class GameManager {
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
       config.spawnerType = SpawnerType.MONSTER;
-
       spawner = new Spawner(
         config,
         this.monsterLocations[key],

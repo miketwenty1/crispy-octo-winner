@@ -35,6 +35,7 @@ var GameManager = /*#__PURE__*/function () {
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
+    this.monsterCount = 0;
   }
 
   (0, _createClass2["default"])(GameManager, [{
@@ -143,7 +144,7 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on('monsterAtttacked', function (monsterId) {
+        socket.on('monster', function (monsterId) {
           // update spawner
           // console.log('debug: '+ Object.keys(this.players[playerId]));
           // console.log('playerid: '+playerId);
@@ -238,7 +239,7 @@ var GameManager = /*#__PURE__*/function () {
       var _this3 = this;
 
       var config = {
-        spawnInterval: _utils.SpawnInterval.DEFAULT,
+        spawnInterval: _utils.Intervals.DEFAULT,
         limit: 3,
         spawnerType: '',
         id: ''
@@ -253,8 +254,12 @@ var GameManager = /*#__PURE__*/function () {
       Object.keys(this.monsterLocations).forEach(function (key) {
         config.id = "monster-".concat(key);
         config.spawnerType = _utils.SpawnerType.MONSTER;
-        spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
-        _this3.spawners[spawner.id] = spawner;
+
+        if (_this3.monsterCount === 0) {
+          spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
+          _this3.spawners[spawner.id] = spawner;
+          _this3.monsterCount += 1;
+        }
       });
     }
   }, {

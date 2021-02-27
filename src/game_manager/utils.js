@@ -28,8 +28,18 @@ export const Direction = {
 };
 
 // right now only default used
-export const SpawnInterval = {
-  CHEST: 30000,
-  MONSTERS: 5000,
+export const Intervals = {
+  Spawn: {
+    CHEST: 30000,
+    MONSTER: 4000,
+  },
+  Movement: {
+    MONSTER: 3000,
+  },
   DEFAULT: 10000,
+};
+
+export const Map = {
+  TileWidth: 60,
+  TileHeight: 60,
 };

@@ -38,49 +38,39 @@ var MonsterModel = /*#__PURE__*/function () {
   }, {
     key: "move",
     value: function move() {
-      var randomPosition = (0, _utils.randomNumber)(1, 8);
-      var distance = 0; //32 * Scale.FACTOR * 3;
+      var randomAngle = (0, _utils.randomNumber)(1, 360);
+      var radian = randomAngle * Math.PI / 180;
+      var distance = (0, _utils.randomNumber)(20, this.mVelocity);
+      var mapWidthScaled = _utils.Map.TileWidth * 32 * _utils.Scale.FACTOR;
+      var mapHeightScaled = _utils.Map.TileHeight * 32 * _utils.Scale.FACTOR;
+      var newY = Math.sin(radian) * distance;
+      var newX = Math.cos(radian) * distance;
+      console.log("PRE this.x: ".concat(this.x, ", this.y: ").concat(this.y));
+      console.log("PRE new x: ".concat(newX, ", new y: ").concat(newY)); // check for out of bounds
 
-      switch (randomPosition) {
-        case 1:
-          this.x += distance;
-          break;
+      if (this.x + newX > mapWidthScaled) {
+        newX = mapWidthScaled - this.x;
+      } else if (this.x + newX < 0) {
+        newX = this.x;
+      } else {//
+      }
 
-        case 2:
-          this.x -= distance;
-          break;
+      if (this.y + newY > mapHeightScaled) {
+        newY = mapHeightScaled - this.y;
+      } else if (this.y + newY < 0) {
+        newY = this.y;
+      } else {//
+      }
 
-        case 3:
-          this.y += distance;
-          break;
+      this.x += newX;
+      this.y += newY;
+      console.log("POST this.x: ".concat(this.x, ", this.y: ").concat(this.y));
+      console.log("POST new x: ".concat(newX, ", new y: ").concat(newY)); // there is logic in each if statement to also provide if logic on whether or not the monster goes out of bounds
+      // 1 - 90 degrees
 
-        case 4:
-          this.y -= distance;
-          break;
-
-        case 5:
-          this.y -= distance;
-          this.x += distance;
-          break;
-
-        case 6:
-          this.y -= distance;
-          this.x -= distance;
-          break;
-
-        case 7:
-          this.y += distance;
-          this.x += distance;
-          break;
-
-        case 8:
-          this.y += distance;
-          this.x -= distance;
-          break;
-
-        default:
-          console.log('Error: default monster movement reached');
-          break;
+      if (this.x > 3840 || this.y > 3840) {
+        console.log('monster on the run');
+        console.log("degrees: ".concat(randomAngle, " - x: ").concat(this.x, ", (newX): ").concat(newX, " y: ").concat(this.y, ", (newY): ").concat(newY, ", distance: ").concat(distance));
       }
     }
   }]);
