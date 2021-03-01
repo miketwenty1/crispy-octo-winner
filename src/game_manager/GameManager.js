@@ -117,7 +117,26 @@ export default class GameManager {
           this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
         }
       });
-      socket.on('monster', (monsterId) => {
+      socket.on('monsterOverlap', (monsterId) => {
+        if (this.monsters[monsterId]) {
+          this.players[socket.id].updateHealth(1);
+          this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
+
+          if (this.players[socket.id].health <= 0) {
+            // update balance to take a 50% penalty
+            // 10 represents the "radix" i believe this should be 10 for base 10 numbering
+            const reduceAmount = parseInt(-this.players[socket.id].bitcoin / 2, 10);
+            // console.log(reduceAmount);
+            this.players[socket.id].updateBitcoin(reduceAmount);
+            socket.emit('updateBalance', this.players[socket.id].bitcoin);
+            // respawn
+            this.players[socket.id].respawn(this.players);
+            this.io.emit('respawnPlayer', this.players[socket.id]);
+          }
+        }
+      });
+
+      socket.on('monsterAttacked', (monsterId) => {
         // update spawner
         // console.log('debug: '+ Object.keys(this.players[playerId]));
         // console.log('playerid: '+playerId);

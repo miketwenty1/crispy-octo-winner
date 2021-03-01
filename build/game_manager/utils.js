@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.randomNumber = randomNumber;
-exports.Map = exports.Intervals = exports.Direction = exports.AUDIO_LEVEL = exports.DIFFICULTY = exports.Mode = exports.Scale = exports.SpawnerType = void 0;
+exports.Movement = exports.Map = exports.Intervals = exports.Direction = exports.AUDIO_LEVEL = exports.DIFFICULTY = exports.Mode = exports.Scale = exports.SpawnerType = void 0;
 var SpawnerType = {
   MONSTER: 'MONSTER',
   CHEST: 'CHEST'
@@ -44,7 +44,10 @@ var Intervals = {
     MONSTER: 4000
   },
   Movement: {
-    MONSTER: 3000
+    MONSTER: 5000
+  },
+  ResetLocation: {
+    MONSTER: 31000
   },
   DEFAULT: 10000
 };
@@ -54,4 +57,8 @@ var Map = {
   TileHeight: 60
 };
 exports.Map = Map;
+var Movement = {
+  MONSTER: 300
+};
+exports.Movement = Movement;
 //# sourceMappingURL=utils.js.map

@@ -1,4 +1,9 @@
-import { SpawnerType, randomNumber, Intervals } from './utils';
+import {
+  SpawnerType,
+  randomNumber,
+  Intervals,
+  Movement,
+} from './utils';
 import ChestModel from './ChestModel';
 import MonsterModel from './MonsterModel';
 
@@ -46,7 +51,7 @@ export default class Spawner {
     const monsterNum = randomNumber(0, 20);
     const attack = (monsterNum + 1) * 2;
     const health = (monsterNum + 1) * 4;
-    const mVelocity = 312; // (monsterNum + 1) / (0.1 * monsterNum);
+    const mVelocity = Movement.MONSTER;
     const location = this.pickRandomLocation('monster', 1);
     const monster = new MonsterModel(
       location[0],
@@ -57,6 +62,8 @@ export default class Spawner {
       health,
       attack,
       mVelocity,
+      Intervals.Movement.MONSTER,
+      Intervals.ResetLocation.MONSTER,
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);

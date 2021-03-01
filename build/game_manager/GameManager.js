@@ -144,7 +144,28 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
-        socket.on('monster', function (monsterId) {
+        socket.on('monsterOverlap', function (monsterId) {
+          if (_this2.monsters[monsterId]) {
+            _this2.players[socket.id].updateHealth(1);
+
+            _this2.io.emit('updatePlayerHealth', socket.id, _this2.players[socket.id].health);
+
+            if (_this2.players[socket.id].health <= 0) {
+              // update balance to take a 50% penalty
+              // 10 represents the "radix" i believe this should be 10 for base 10 numbering
+              var reduceAmount = parseInt(-_this2.players[socket.id].bitcoin / 2, 10); // console.log(reduceAmount);
+
+              _this2.players[socket.id].updateBitcoin(reduceAmount);
+
+              socket.emit('updateBalance', _this2.players[socket.id].bitcoin); // respawn
+
+              _this2.players[socket.id].respawn(_this2.players);
+
+              _this2.io.emit('respawnPlayer', _this2.players[socket.id]);
+            }
+          }
+        });
+        socket.on('monsterAttacked', function (monsterId) {
           // update spawner
           // console.log('debug: '+ Object.keys(this.players[playerId]));
           // console.log('playerid: '+playerId);
@@ -254,12 +275,8 @@ var GameManager = /*#__PURE__*/function () {
       Object.keys(this.monsterLocations).forEach(function (key) {
         config.id = "monster-".concat(key);
         config.spawnerType = _utils.SpawnerType.MONSTER;
-
-        if (_this3.monsterCount === 0) {
-          spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
-          _this3.spawners[spawner.id] = spawner;
-          _this3.monsterCount += 1;
-        }
+        spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
+        _this3.spawners[spawner.id] = spawner;
       });
     }
   }, {

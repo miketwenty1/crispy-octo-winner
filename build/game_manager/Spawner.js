@@ -30,7 +30,6 @@ var Spawner = /*#__PURE__*/function () {
     this.objectsCreated = [];
     this.start();
     this.moveObjects = moveObjects;
-    this.monsterCount = 0;
   }
 
   (0, _createClass2["default"])(Spawner, [{
@@ -68,19 +67,15 @@ var Spawner = /*#__PURE__*/function () {
   }, {
     key: "spawnMonster",
     value: function spawnMonster() {
-      if (this.monsterCount === 0) {
-        var monsterNum = (0, _utils.randomNumber)(0, 20);
-        var attack = (monsterNum + 1) * 2;
-        var health = (monsterNum + 1) * 4;
-        var mVelocity = 312; // (monsterNum + 1) / (0.1 * monsterNum);
-
-        var location = this.pickRandomLocation('monster', 1);
-        var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(21, 21 + attack + health), // coins drop more powerful more likely to drop coins
-        this.id, monsterNum, health, attack, mVelocity);
-        this.objectsCreated.push(monster);
-        this.addObject(monster.id, monster);
-        this.monsterCount += 1;
-      }
+      var monsterNum = (0, _utils.randomNumber)(0, 20);
+      var attack = (monsterNum + 1) * 2;
+      var health = (monsterNum + 1) * 4;
+      var mVelocity = _utils.Movement.MONSTER;
+      var location = this.pickRandomLocation('monster', 1);
+      var monster = new _MonsterModel["default"](location[0], location[1], (0, _utils.randomNumber)(21, 21 + attack + health), // coins drop more powerful more likely to drop coins
+      this.id, monsterNum, health, attack, mVelocity, _utils.Intervals.Movement.MONSTER, _utils.Intervals.ResetLocation.MONSTER);
+      this.objectsCreated.push(monster);
+      this.addObject(monster.id, monster);
     }
   }, {
     key: "pickRandomLocation",

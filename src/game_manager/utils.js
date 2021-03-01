@@ -34,7 +34,10 @@ export const Intervals = {
     MONSTER: 4000,
   },
   Movement: {
-    MONSTER: 3000,
+    MONSTER: 5000,
+  },
+  ResetLocation: {
+    MONSTER: 31000,
   },
   DEFAULT: 10000,
 };
@@ -42,4 +45,8 @@ export const Intervals = {
 export const Map = {
   TileWidth: 60,
   TileHeight: 60,
+};
+
+export const Movement = {
+  MONSTER: 300,
 };
