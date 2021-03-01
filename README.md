@@ -1,5 +1,5 @@
 # Known bugs
-- player collisions are wonky 
+- player collisions are wonky
 - monster movement is not synced (sort of fixed now they float through walls)
 - very little server validation on client inputs
 - ~~monsters don't collide with outer limits~~
@@ -13,3 +13,4 @@
 - ~~character selection~~
 - upgrade weapons / health / stats
 - ~~login-signup / save stats~~
+- needs to be mobile friendly
