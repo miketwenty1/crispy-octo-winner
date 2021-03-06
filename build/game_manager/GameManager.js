@@ -144,6 +144,15 @@ var GameManager = /*#__PURE__*/function () {
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
         });
+        socket.on('healPlayer', function () {
+          if (_this2.players[socket.id].health < _this2.players[socket.id].maxHealth) {
+            _this2.players[socket.id].updateHealth(-1);
+
+            _this2.io.emit('updatePlayerHealth', socket.id, _this2.players[socket.id].health);
+          } else {
+            console.log('cant heal already at full health');
+          }
+        });
         socket.on('monsterOverlap', function (monsterId) {
           if (_this2.monsters[monsterId]) {
             _this2.players[socket.id].updateHealth(1);

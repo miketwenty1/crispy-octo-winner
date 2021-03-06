@@ -32,24 +32,6 @@
          "name":"special_locations",
          "objects":[
                 {
-                 "gid":84,
-                 "height":32,
-                 "id":116,
-                 "name":"",
-                 "properties":[
-                        {
-                         "name":"name",
-                         "type":"string",
-                         "value":"fountain2"
-                        }],
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":32,
-                 "x":992.666666666667,
-                 "y":1087.33333333333
-                }, 
-                {
                  "gid":83,
                  "height":32,
                  "id":117,
@@ -58,17 +40,17 @@
                         {
                          "name":"name",
                          "type":"string",
-                         "value":"fountain1"
+                         "value":"fountain"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":32,
-                 "x":992.666666666667,
-                 "y":1087.33333333333
+                 "x":992.667,
+                 "y":1087.33
                 }, 
                 {
-                 "height":18.84375,
+                 "height":18.8438,
                  "id":118,
                  "name":"Heal Yourself",
                  "properties":[
@@ -86,9 +68,9 @@
                     },
                  "type":"",
                  "visible":true,
-                 "width":109.546875,
-                 "x":1002.55989583333,
-                 "y":1028.24479166667
+                 "width":109.547,
+                 "x":1002.56,
+                 "y":1028.24
                 }, 
                 {
                  "height":73,
@@ -98,14 +80,14 @@
                         {
                          "name":"name",
                          "type":"string",
-                         "value":"healSquare"
+                         "value":"healRect"
                         }],
                  "rotation":0,
                  "type":"",
                  "visible":true,
-                 "width":75.6666666666665,
+                 "width":75.6667,
                  "x":971,
-                 "y":1041.33333333333
+                 "y":1041.33
                 }],
          "opacity":1,
          "type":"objectgroup",

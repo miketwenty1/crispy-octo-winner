@@ -117,6 +117,15 @@ export default class GameManager {
           this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
         }
       });
+
+      socket.on('healPlayer', () => {
+        if (this.players[socket.id].health < this.players[socket.id].maxHealth) {
+          this.players[socket.id].updateHealth(-1);
+          this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
+        } else {
+          console.log('cant heal already at full health');
+        }
+      });
       socket.on('monsterOverlap', (monsterId) => {
         if (this.monsters[monsterId]) {
           this.players[socket.id].updateHealth(1);

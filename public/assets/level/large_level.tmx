@@ -132,14 +132,9 @@
 </data>
  </layer>
  <objectgroup id="6" name="special_locations">
-  <object id="116" gid="84" x="992.667" y="1087.33" width="32" height="32">
-   <properties>
-    <property name="name" value="fountain2"/>
-   </properties>
-  </object>
   <object id="117" gid="83" x="992.667" y="1087.33" width="32" height="32">
    <properties>
-    <property name="name" value="fountain1"/>
+    <property name="name" value="fountain"/>
    </properties>
   </object>
   <object id="118" name="Heal Yourself" x="1002.56" y="1028.24" width="109.547" height="18.8438">
@@ -150,7 +145,7 @@
   </object>
   <object id="119" x="971" y="1041.33" width="75.6667" height="73">
    <properties>
-    <property name="name" value="healSquare"/>
+    <property name="name" value="healRect"/>
    </properties>
   </object>
  </objectgroup>
