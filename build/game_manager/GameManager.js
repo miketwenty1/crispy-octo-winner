@@ -9,6 +9,10 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
 var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/classCallCheck"));
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
@@ -20,6 +24,8 @@ var _PlayerModel = _interopRequireDefault(require("./PlayerModel"));
 var levelData = _interopRequireWildcard(require("../../public/assets/level/large_level.json"));
 
 var _Spawner = _interopRequireDefault(require("./Spawner"));
+
+var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
 
 var _utils = require("./utils");
 
@@ -131,6 +137,53 @@ var GameManager = /*#__PURE__*/function () {
             _this2.io.emit('playerMoved', _this2.players[socket.id]);
           }
         });
+        socket.on('sendMessage', /*#__PURE__*/function () {
+          var _ref = (0, _asyncToGenerator2["default"])( /*#__PURE__*/_regenerator["default"].mark(function _callee(message, token) {
+            var decoded, _decoded$user, username, email;
+
+            return _regenerator["default"].wrap(function _callee$(_context) {
+              while (1) {
+                switch (_context.prev = _context.next) {
+                  case 0:
+                    console.log(message);
+                    console.log(token);
+                    _context.prev = 2;
+                    decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
+                    _decoded$user = decoded.user, username = _decoded$user.username, email = _decoded$user.email;
+                    _context.next = 7;
+                    return _ChatModel["default"].create({
+                      email: email,
+                      message: message
+                    });
+
+                  case 7:
+                    _this2.io.emit('newMessage', {
+                      username: username,
+                      message: message,
+                      frame: _this2.players[socket.id].frame
+                    });
+
+                    _context.next = 14;
+                    break;
+
+                  case 10:
+                    _context.prev = 10;
+                    _context.t0 = _context["catch"](2);
+                    console.log("err with validating jwt token ".concat(_context.t0.message));
+                    socket.emit('invalidToken');
+
+                  case 14:
+                  case "end":
+                    return _context.stop();
+                }
+              }
+            }, _callee, null, [[2, 10]]);
+          }));
+
+          return function (_x, _x2) {
+            return _ref.apply(this, arguments);
+          };
+        }());
         socket.on('pickUpChest', function (chestId) {
           // update spawner
           if (_this2.chests[chestId]) {

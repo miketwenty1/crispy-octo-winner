@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import PlayerModel from './PlayerModel';
 import * as levelData from '../../public/assets/level/large_level.json';
 import Spawner from './Spawner';
+import ChatModel from '../models/ChatModel';
 import {
   SpawnerType, Mode, DIFFICULTY, Scale, Intervals,
 } from './utils';
@@ -101,6 +102,23 @@ export default class GameManager {
 
           // emit message to all players letting them know about the updated position
           this.io.emit('playerMoved', this.players[socket.id]);
+        }
+      });
+      socket.on('sendMessage', async (message, token) => {
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET);
+          const { username, email } = decoded.user;
+
+          await ChatModel.create({ email, message });
+
+          this.io.emit('newMessage', {
+            username,
+            message,
+            frame: this.players[socket.id].frame,
+          });
+        } catch (err) {
+          console.log(`err with validating jwt token ${err.message}`);
+          socket.emit('invalidToken');
         }
       });
       socket.on('pickUpChest', (chestId) => {

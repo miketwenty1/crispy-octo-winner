@@ -33,3 +33,30 @@ html, body {
     bottom: 0%;
   }
 }
+
+.chat-input {
+  position: absolute;
+  height: 30px;
+  font-size: 16px;
+  color: #000000;
+  font-style: italic;
+  bottom: 0px;
+}
+
+.chat-invisible {
+  opacity: 0;
+}
+
+.chat-visble {
+  opacity: 0.4;
+}
+
+.chat-bottom {
+  left: px;
+  width: 100%;
+}
+
+.chat-sidebar {
+  right: 0px;
+  width: 300px;
+}

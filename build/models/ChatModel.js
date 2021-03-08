@@ -13,8 +13,7 @@ var Schema = _mongoose["default"].Schema;
 var ChatSchema = new Schema({
   email: {
     type: String,
-    required: true,
-    unique: true // a unique id should be used eventually
+    required: true // unique: false, // a unique id should be used eventually
 
   },
   message: {
