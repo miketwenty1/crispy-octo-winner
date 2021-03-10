@@ -1,4 +1,5 @@
 # Known bugs
+- names can go undefined if you talk to quickly in text boxes
 - player collisions are wonky
 - monster movement is not synced (sort of fixed now they float through walls)
 - very little server validation on client inputs
@@ -8,9 +9,11 @@
 
 # ideas / features
 - score board
-- chat
+- mobile friendly
+- upgrade weapons / health / stats
+- inventory
+- ~~chat~~
 - ~~user name~~
 - ~~character selection~~
-- upgrade weapons / health / stats
 - ~~login-signup / save stats~~
-- needs to be mobile friendly
+- ~~healing fountain in the middle~~

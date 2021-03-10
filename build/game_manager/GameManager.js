@@ -145,39 +145,38 @@ var GameManager = /*#__PURE__*/function () {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
-                    console.log(message);
-                    console.log(token);
-                    _context.prev = 2;
+                    _context.prev = 0;
                     decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
                     _decoded$user = decoded.user, username = _decoded$user.username, email = _decoded$user.email;
-                    _context.next = 7;
+                    _context.next = 5;
                     return _ChatModel["default"].create({
                       email: email,
                       message: message
                     });
 
-                  case 7:
+                  case 5:
+                    // console.log(username, message);
                     _this2.io.emit('newMessage', {
                       username: username,
                       message: message,
                       frame: _this2.players[socket.id].frame
                     });
 
-                    _context.next = 14;
+                    _context.next = 12;
                     break;
 
-                  case 10:
-                    _context.prev = 10;
-                    _context.t0 = _context["catch"](2);
+                  case 8:
+                    _context.prev = 8;
+                    _context.t0 = _context["catch"](0);
                     console.log("err with validating jwt token ".concat(_context.t0.message));
                     socket.emit('invalidToken');
 
-                  case 14:
+                  case 12:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, null, [[2, 10]]);
+            }, _callee, null, [[0, 8]]);
           }));
 
           return function (_x, _x2) {

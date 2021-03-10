@@ -110,7 +110,7 @@ export default class GameManager {
           const { username, email } = decoded.user;
 
           await ChatModel.create({ email, message });
-
+          // console.log(username, message);
           this.io.emit('newMessage', {
             username,
             message,
