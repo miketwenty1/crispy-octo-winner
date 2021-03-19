@@ -27,6 +27,8 @@ var _Spawner = _interopRequireDefault(require("./Spawner"));
 
 var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
 
+var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
+
 var _utils = require("./utils");
 
 // in charge of managing game state for player's game
@@ -36,11 +38,13 @@ var GameManager = /*#__PURE__*/function () {
     this.io = io;
     this.spawners = {};
     this.chests = {};
+    this.items = {};
     this.monsters = {};
     this.players = {};
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
+    this.itemLocations = itemData.locations;
     this.monsterCount = 0;
   }
 
@@ -127,7 +131,11 @@ var GameManager = /*#__PURE__*/function () {
           }
         });
         socket.on('playerMovement', function (playerData) {
-          if (_this2.players[socket.id]) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow playerMovement we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.players[socket.id]) {
             _this2.players[socket.id].x = playerData.x;
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
@@ -145,16 +153,29 @@ var GameManager = /*#__PURE__*/function () {
               while (1) {
                 switch (_context.prev = _context.next) {
                   case 0:
-                    _context.prev = 0;
+                    if (_this2.players[socket.id]) {
+                      _context.next = 5;
+                      break;
+                    }
+
+                    console.log('somehow sendMessage we got an undefined player');
+
+                    _this2.checkSocket(socket);
+
+                    _context.next = 17;
+                    break;
+
+                  case 5:
+                    _context.prev = 5;
                     decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET);
                     _decoded$user = decoded.user, username = _decoded$user.username, email = _decoded$user.email;
-                    _context.next = 5;
+                    _context.next = 10;
                     return _ChatModel["default"].create({
                       email: email,
                       message: message
                     });
 
-                  case 5:
+                  case 10:
                     // console.log(username, message);
                     _this2.io.emit('newMessage', {
                       username: username,
@@ -162,21 +183,21 @@ var GameManager = /*#__PURE__*/function () {
                       frame: _this2.players[socket.id].frame
                     });
 
-                    _context.next = 12;
+                    _context.next = 17;
                     break;
 
-                  case 8:
-                    _context.prev = 8;
-                    _context.t0 = _context["catch"](0);
+                  case 13:
+                    _context.prev = 13;
+                    _context.t0 = _context["catch"](5);
                     console.log("err with validating jwt token ".concat(_context.t0.message));
                     socket.emit('invalidToken');
 
-                  case 12:
+                  case 17:
                   case "end":
                     return _context.stop();
                 }
               }
-            }, _callee, null, [[0, 8]]);
+            }, _callee, null, [[5, 13]]);
           }));
 
           return function (_x, _x2) {
@@ -184,8 +205,11 @@ var GameManager = /*#__PURE__*/function () {
           };
         }());
         socket.on('pickUpChest', function (chestId) {
-          // update spawner
-          if (_this2.chests[chestId]) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow pickUpChest we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.chests[chestId]) {
             // short hand for setting bitcoin variable from chests[chestId].bitcoin this is probably a bad idea.. just trying to learn javascript and see if this works.
             var bitcoin = _this2.chests[chestId].bitcoin; // updating player balance
 
@@ -198,7 +222,7 @@ var GameManager = /*#__PURE__*/function () {
         });
         socket.on('healPlayer', function () {
           if (!_this2.players[socket.id]) {
-            console.log('somehow we got an undefined player');
+            console.log('somehow healPlayer we got an undefined player');
 
             _this2.checkSocket(socket);
           } else if (_this2.players[socket.id].health < _this2.players[socket.id].maxHealth) {
@@ -208,7 +232,11 @@ var GameManager = /*#__PURE__*/function () {
           }
         });
         socket.on('monsterOverlap', function (monsterId) {
-          if (_this2.monsters[monsterId]) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow monsterOverlap we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.monsters[monsterId]) {
             _this2.players[socket.id].updateHealth(1);
 
             _this2.io.emit('updatePlayerHealth', socket.id, _this2.players[socket.id].health);
@@ -232,7 +260,11 @@ var GameManager = /*#__PURE__*/function () {
           // update spawner
           // console.log('debug: '+ Object.keys(this.players[playerId]));
           // console.log('playerid: '+playerId);
-          if (_this2.monsters[monsterId]) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow monsterAttacked we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.monsters[monsterId]) {
             var _this2$monsters$monst = _this2.monsters[monsterId],
                 bitcoin = _this2$monsters$monst.bitcoin,
                 attack = _this2$monsters$monst.attack;
@@ -282,7 +314,11 @@ var GameManager = /*#__PURE__*/function () {
           }
         });
         socket.on('attackedPlayer', function (attackedPlayerId) {
-          if (_this2.players[attackedPlayerId]) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow attackedPlayer we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.players[attackedPlayerId]) {
             // get balance
             var bitcoin = _this2.players[attackedPlayerId].bitcoin;
             var playerAttackValue = _this2.players[socket.id].attack; // subtract health
@@ -361,6 +397,18 @@ var GameManager = /*#__PURE__*/function () {
     value: function deleteChest(chestId) {
       delete this.chests[chestId];
       this.io.emit('chestRemoved', chestId);
+    }
+  }, {
+    key: "addItem",
+    value: function addItem(itemId, item) {
+      this.items[itemId] = item;
+      this.io.emit('itemSpawned', item);
+    }
+  }, {
+    key: "deleteItem",
+    value: function deleteItem(itemId) {
+      delete this.items[itemId];
+      this.io.emit('itemRemoved', itemId);
     }
   }, {
     key: "addMonster",

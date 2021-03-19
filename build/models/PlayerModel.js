@@ -20,7 +20,7 @@ var PlayerModel = /*#__PURE__*/function () {
     this.attack = 10;
     this.health = 100;
     this.maxHealth = 100;
-    this.defense = 30;
+    this.defense = 2;
     this.bitcoin = 0;
     this.id = playerId;
     this.spawnLocations = spawnLocations;
@@ -35,16 +35,36 @@ var PlayerModel = /*#__PURE__*/function () {
     this.y = _location[1];
     this.username = username;
     this.frame = frame;
+    this.playerItems = {};
+    this.maxNumberOfItems = 3;
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
+    key: "canPickupItem",
+    value: function canPickupItem() {
+      if (Object.keys(this.playerItems).length < this.maxNumberOfItems) {
+        return false;
+      }
+
+      return true;
+    }
+  }, {
+    key: "addItem",
+    value: function addItem(item) {
+      this.playerItems[item.id] = item;
+    }
+  }, {
+    key: "removeItem",
+    value: function removeItem(item) {
+      delete this.playerItems[item.id];
+    }
+  }, {
     key: "playerAttacked",
     value: function playerAttacked(attack) {
       var damage = attack - this.defense;
       if (damage < 0) damage = 0;
-      this.updateHealth(damage);
-      console.log(attack);
-      console.log(damage);
+      this.updateHealth(damage); // console.log(attack);
+      // console.log(damage);
     }
   }, {
     key: "updateBitcoin",

@@ -99,7 +99,10 @@ export default class GameManager {
         }
       });
       socket.on('playerMovement', (playerData) => {
-        if (this.players[socket.id]) {
+        if (!this.players[socket.id]) {
+          console.log('somehow playerMovement we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.players[socket.id]) {
           this.players[socket.id].x = playerData.x;
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
@@ -111,25 +114,32 @@ export default class GameManager {
         }
       });
       socket.on('sendMessage', async (message, token) => {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          const { username, email } = decoded.user;
-
-          await ChatModel.create({ email, message });
-          // console.log(username, message);
-          this.io.emit('newMessage', {
-            username,
-            message,
-            frame: this.players[socket.id].frame,
-          });
-        } catch (err) {
-          console.log(`err with validating jwt token ${err.message}`);
-          socket.emit('invalidToken');
+        if (!this.players[socket.id]) {
+          console.log('somehow sendMessage we got an undefined player');
+          this.checkSocket(socket);
+        } else {
+          try {
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+            const { username, email } = decoded.user;
+  
+            await ChatModel.create({ email, message });
+            // console.log(username, message);
+            this.io.emit('newMessage', {
+              username,
+              message,
+              frame: this.players[socket.id].frame,
+            });
+          } catch (err) {
+            console.log(`err with validating jwt token ${err.message}`);
+            socket.emit('invalidToken');
+          }
         }
       });
       socket.on('pickUpChest', (chestId) => {
-        // update spawner
-        if (this.chests[chestId]) {
+        if (!this.players[socket.id]) {
+          console.log('somehow pickUpChest we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.chests[chestId]) {
           // short hand for setting bitcoin variable from chests[chestId].bitcoin this is probably a bad idea.. just trying to learn javascript and see if this works.
           const { bitcoin } = this.chests[chestId];
 
@@ -144,7 +154,7 @@ export default class GameManager {
 
       socket.on('healPlayer', () => {
         if (!this.players[socket.id]) {
-          console.log('somehow we got an undefined player');
+          console.log('somehow healPlayer we got an undefined player');
           this.checkSocket(socket);
         } else if (this.players[socket.id].health < this.players[socket.id].maxHealth) {
           this.players[socket.id].updateHealth(-1);
@@ -152,7 +162,10 @@ export default class GameManager {
         }
       });
       socket.on('monsterOverlap', (monsterId) => {
-        if (this.monsters[monsterId]) {
+        if (!this.players[socket.id]) {
+          console.log('somehow monsterOverlap we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.monsters[monsterId]) {
           this.players[socket.id].updateHealth(1);
           this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
 
@@ -174,7 +187,10 @@ export default class GameManager {
         // update spawner
         // console.log('debug: '+ Object.keys(this.players[playerId]));
         // console.log('playerid: '+playerId);
-        if (this.monsters[monsterId]) {
+        if (!this.players[socket.id]) {
+          console.log('somehow monsterAttacked we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.monsters[monsterId]) {
           const { bitcoin, attack } = this.monsters[monsterId];
           const playerAttackValue = this.players[socket.id].attack;
           this.monsters[monsterId].loseHealth(playerAttackValue);
@@ -212,7 +228,10 @@ export default class GameManager {
         }
       });
       socket.on('attackedPlayer', (attackedPlayerId) => {
-        if (this.players[attackedPlayerId]) {
+        if (!this.players[socket.id]) {
+          console.log('somehow attackedPlayer we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.players[attackedPlayerId]) {
           // get balance
           const { bitcoin } = this.players[attackedPlayerId];
           const playerAttackValue = this.players[socket.id].attack;
