@@ -17,8 +17,10 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 var PlayerModel = /*#__PURE__*/function () {
   function PlayerModel(playerId, spawnLocations, players, username, frame) {
     (0, _classCallCheck2["default"])(this, PlayerModel);
+    this.attack = 10;
     this.health = 100;
     this.maxHealth = 100;
+    this.defense = 30;
     this.bitcoin = 0;
     this.id = playerId;
     this.spawnLocations = spawnLocations;
@@ -36,6 +38,15 @@ var PlayerModel = /*#__PURE__*/function () {
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
+    key: "playerAttacked",
+    value: function playerAttacked(attack) {
+      var damage = attack - this.defense;
+      if (damage < 0) damage = 0;
+      this.updateHealth(damage);
+      console.log(attack);
+      console.log(damage);
+    }
+  }, {
     key: "updateBitcoin",
     value: function updateBitcoin(bitcoin) {
       this.bitcoin += bitcoin;

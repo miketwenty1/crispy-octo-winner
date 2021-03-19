@@ -1,8 +1,10 @@
 // container player information like health and balance
 export default class PlayerModel {
   constructor(playerId, spawnLocations, players, username, frame) {
+    this.attack = 10;
     this.health = 100;
     this.maxHealth = 100;
+    this.defense = 2;
     this.bitcoin = 0;
     this.id = playerId;
     this.spawnLocations = spawnLocations;
@@ -14,6 +16,31 @@ export default class PlayerModel {
     [this.x, this.y] = location;
     this.username = username;
     this.frame = frame;
+    this.playerItems = {};
+    this.maxNumberOfItems = 3;
+  }
+
+  canPickupItem() {
+    if (Object.keys(this.playerItems).length < this.maxNumberOfItems) {
+      return false;
+    }
+    return true;
+  }
+
+  addItem(item) {
+    this.playerItems[item.id] = item;
+  }
+
+  removeItem(item) {
+    delete this.playerItems[item.id];
+  }
+
+  playerAttacked(attack) {
+    let damage = attack - this.defense;
+    if (damage < 0) damage = 0;
+    this.updateHealth(damage);
+    // console.log(attack);
+    // console.log(damage);
   }
 
   updateBitcoin(bitcoin) {

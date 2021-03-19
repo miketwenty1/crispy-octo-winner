@@ -13,9 +13,9 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 var _utils = require("./utils");
 
-var _ChestModel = _interopRequireDefault(require("./ChestModel"));
+var _ChestModel = _interopRequireDefault(require("../models/ChestModel"));
 
-var _MonsterModel = _interopRequireDefault(require("./MonsterModel"));
+var _MonsterModel = _interopRequireDefault(require("../models/MonsterModel"));
 
 var Spawner = /*#__PURE__*/function () {
   function Spawner(config, spawnLocations, addObject, deleteObject, moveObjects) {

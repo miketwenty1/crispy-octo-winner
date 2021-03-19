@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
-import PlayerModel from './PlayerModel';
+import PlayerModel from '../models/PlayerModel';
 import * as levelData from '../../public/assets/level/large_level.json';
 import Spawner from './Spawner';
 import ChatModel from '../models/ChatModel';
+import * as itemData from '../../public/assets/level/tools.json';
+
 import {
-  SpawnerType, Mode, DIFFICULTY, Scale, Intervals,
+  SpawnerType, Scale, Intervals,
 } from './utils';
 // in charge of managing game state for player's game
 export default class GameManager {
@@ -12,11 +14,15 @@ export default class GameManager {
     this.io = io;
     this.spawners = {};
     this.chests = {};
+    this.items = {};
     this.monsters = {};
     this.players = {};
+
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
+    this.itemLocations = itemData.locations;
+
     this.monsterCount = 0;
   }
 
@@ -170,7 +176,8 @@ export default class GameManager {
         // console.log('playerid: '+playerId);
         if (this.monsters[monsterId]) {
           const { bitcoin, attack } = this.monsters[monsterId];
-          this.monsters[monsterId].loseHealth(2 * Mode[DIFFICULTY]);
+          const playerAttackValue = this.players[socket.id].attack;
+          this.monsters[monsterId].loseHealth(playerAttackValue);
           // console.log('health' + this.monsters[monsterId].health);
           // check health remove monster if dead
           if (this.monsters[monsterId].health <= 0) {
@@ -183,7 +190,7 @@ export default class GameManager {
             this.players[socket.id].updateHealth(-10);
             this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
           } else {
-            this.players[socket.id].updateHealth(attack);
+            this.players[socket.id].playerAttacked(attack);
             // update player health
             this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
             // update monster health
@@ -208,8 +215,9 @@ export default class GameManager {
         if (this.players[attackedPlayerId]) {
           // get balance
           const { bitcoin } = this.players[attackedPlayerId];
+          const playerAttackValue = this.players[socket.id].attack;
           // subtract health
-          this.players[attackedPlayerId].updateHealth(10);
+          this.players[attackedPlayerId].playerAttacked(playerAttackValue);
           // check health of attacked player if dead send gold to attacker
           if (this.players[attackedPlayerId].health <= 0) {
             // dead player loses half of the gold to attacker
@@ -282,6 +290,16 @@ export default class GameManager {
   deleteChest(chestId) {
     delete this.chests[chestId];
     this.io.emit('chestRemoved', chestId);
+  }
+
+  addItem(itemId, item) {
+    this.items[itemId] = item;
+    this.io.emit('itemSpawned', item);
+  }
+
+  deleteItem(itemId) {
+    delete this.items[itemId];
+    this.io.emit('itemRemoved', itemId);
   }
 
   addMonster(monsterId, monster) {

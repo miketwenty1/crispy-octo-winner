@@ -1,5 +1,5 @@
 import { v4 } from 'uuid';
-import { randomNumber, Scale, Map } from './utils';
+import { randomNumber, Scale, Map } from '../game_manager/utils';
 
 export default class MonsterModel {
   constructor(x, y, bitcoin, spawnerId, frame, health, attack, mVelocity, movementIntervalTime) {

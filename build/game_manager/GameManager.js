@@ -19,7 +19,7 @@ var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/creat
 
 var _jsonwebtoken = _interopRequireDefault(require("jsonwebtoken"));
 
-var _PlayerModel = _interopRequireDefault(require("./PlayerModel"));
+var _PlayerModel = _interopRequireDefault(require("../models/PlayerModel"));
 
 var levelData = _interopRequireWildcard(require("../../public/assets/level/large_level.json"));
 
@@ -197,12 +197,14 @@ var GameManager = /*#__PURE__*/function () {
           }
         });
         socket.on('healPlayer', function () {
-          if (_this2.players[socket.id].health < _this2.players[socket.id].maxHealth) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.players[socket.id].health < _this2.players[socket.id].maxHealth) {
             _this2.players[socket.id].updateHealth(-1);
 
             _this2.io.emit('updatePlayerHealth', socket.id, _this2.players[socket.id].health);
-          } else {
-            console.log('cant heal already at full health');
           }
         });
         socket.on('monsterOverlap', function (monsterId) {
@@ -234,8 +236,9 @@ var GameManager = /*#__PURE__*/function () {
             var _this2$monsters$monst = _this2.monsters[monsterId],
                 bitcoin = _this2$monsters$monst.bitcoin,
                 attack = _this2$monsters$monst.attack;
+            var playerAttackValue = _this2.players[socket.id].attack;
 
-            _this2.monsters[monsterId].loseHealth(2 * _utils.Mode[_utils.DIFFICULTY]); // console.log('health' + this.monsters[monsterId].health);
+            _this2.monsters[monsterId].loseHealth(playerAttackValue); // console.log('health' + this.monsters[monsterId].health);
             // check health remove monster if dead
 
 
@@ -253,7 +256,7 @@ var GameManager = /*#__PURE__*/function () {
 
               _this2.io.emit('updatePlayerHealth', socket.id, _this2.players[socket.id].health);
             } else {
-              _this2.players[socket.id].updateHealth(attack); // update player health
+              _this2.players[socket.id].playerAttacked(attack); // update player health
 
 
               _this2.io.emit('updatePlayerHealth', socket.id, _this2.players[socket.id].health); // update monster health
@@ -281,9 +284,10 @@ var GameManager = /*#__PURE__*/function () {
         socket.on('attackedPlayer', function (attackedPlayerId) {
           if (_this2.players[attackedPlayerId]) {
             // get balance
-            var bitcoin = _this2.players[attackedPlayerId].bitcoin; // subtract health
+            var bitcoin = _this2.players[attackedPlayerId].bitcoin;
+            var playerAttackValue = _this2.players[socket.id].attack; // subtract health
 
-            _this2.players[attackedPlayerId].updateHealth(10); // check health of attacked player if dead send gold to attacker
+            _this2.players[attackedPlayerId].playerAttacked(playerAttackValue); // check health of attacked player if dead send gold to attacker
 
 
             if (_this2.players[attackedPlayerId].health <= 0) {
@@ -374,6 +378,13 @@ var GameManager = /*#__PURE__*/function () {
     key: "moveMonsters",
     value: function moveMonsters() {
       this.io.emit('monsterMovement', this.monsters);
+    }
+  }, {
+    key: "checkSocket",
+    value: function checkSocket(socket) {
+      if (!this.players[socket.id]) {
+        this.io.emit('playerDisconnect', socket.id);
+      }
     }
   }]);
   return GameManager;

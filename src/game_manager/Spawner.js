@@ -4,8 +4,8 @@ import {
   Intervals,
   Movement,
 } from './utils';
-import ChestModel from './ChestModel';
-import MonsterModel from './MonsterModel';
+import ChestModel from '../models/ChestModel';
+import MonsterModel from '../models/MonsterModel';
 
 export default class Spawner {
   constructor(config, spawnLocations, addObject, deleteObject, moveObjects) {
