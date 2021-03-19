@@ -137,11 +137,12 @@ export default class GameManager {
       });
 
       socket.on('healPlayer', () => {
-        if (this.players[socket.id].health < this.players[socket.id].maxHealth) {
+        if (!this.players[socket.id]) {
+          console.log('somehow we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.players[socket.id].health < this.players[socket.id].maxHealth) {
           this.players[socket.id].updateHealth(-1);
           this.io.emit('updatePlayerHealth', socket.id, this.players[socket.id].health);
-        } else {
-          console.log('cant heal already at full health');
         }
       });
       socket.on('monsterOverlap', (monsterId) => {
@@ -295,5 +296,11 @@ export default class GameManager {
 
   moveMonsters() {
     this.io.emit('monsterMovement', this.monsters);
+  }
+
+  checkSocket(socket) {
+    if (!this.players[socket.id]) {
+      this.io.emit('playerDisconnect', socket.id);
+    }
   }
 }
