@@ -1,9 +1,5 @@
-import {
-  SpawnerType,
-  randomNumber,
-  Intervals,
-  Movement,
-} from './utils';
+import {randomNumber} from '../utils';
+import {enums} from '../enums';
 import ChestModel from '../models/ChestModel';
 import MonsterModel from '../models/MonsterModel';
 
@@ -27,15 +23,15 @@ export default class Spawner {
         this.spawnObject();
       }
     }, this.spawnInterval);
-    if (this.objectType === SpawnerType.MONSTER) {
+    if (this.objectType === enums.SpawnerType.MONSTER) {
       this.moveMonsters();
     }
   }
 
   spawnObject() {
-    if (this.objectType === SpawnerType.CHEST) {
+    if (this.objectType === enums.SpawnerType.CHEST) {
       this.spawnChest();
-    } else if (this.objectType === SpawnerType.MONSTER) {
+    } else if (this.objectType === enums.SpawnerType.MONSTER) {
       this.spawnMonster();
     }
   }
@@ -51,7 +47,7 @@ export default class Spawner {
     const monsterNum = randomNumber(0, 20);
     const attack = (monsterNum + 1) * 2;
     const health = (monsterNum + 1) * 4;
-    const mVelocity = Movement.MONSTER;
+    const mVelocity = enums.Movement.MONSTER;
     const location = this.pickRandomLocation('monster', 1);
     const monster = new MonsterModel(
       location[0],
@@ -62,8 +58,8 @@ export default class Spawner {
       health,
       attack,
       mVelocity,
-      Intervals.Movement.MONSTER,
-      Intervals.ResetLocation.MONSTER,
+      enums.Intervals.Movement.MONSTER,
+      enums.Intervals.ResetLocation.MONSTER,
     );
     this.objectsCreated.push(monster);
     this.addObject(monster.id, monster);
@@ -99,6 +95,6 @@ export default class Spawner {
         monster.move();
       });
       this.moveObjects();
-    }, Intervals.Movement.MONSTER);
+    }, enums.Intervals.Movement.MONSTER);
   }
 }
