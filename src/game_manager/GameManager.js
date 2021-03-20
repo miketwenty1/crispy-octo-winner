@@ -5,9 +5,8 @@ import Spawner from './Spawner';
 import ChatModel from '../models/ChatModel';
 import * as itemData from '../../public/assets/level/tools.json';
 
-import {
-  SpawnerType, Scale, Intervals,
-} from './utils';
+import {enums} from '../enums';
+
 // in charge of managing game state for player's game
 export default class GameManager {
   constructor(io) {
@@ -37,22 +36,22 @@ export default class GameManager {
     this.levelData.layers.forEach((layer) => {
       if (layer.name === 'player_locations') {
         layer.objects.forEach((obj) => {
-          this.playerLocations.push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
+          this.playerLocations.push([obj.x * enums.Scale.FACTOR, obj.y * enums.Scale.FACTOR]);
         });
       } else if (layer.name === 'monster_locations') {
         layer.objects.forEach((obj) => {
           if (this.monsterLocations[obj.properties[0].value]) {
-            this.monsterLocations[obj.properties[0].value].push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
+            this.monsterLocations[obj.properties[0].value].push([obj.x * enums.Scale.FACTOR, obj.y * enums.Scale.FACTOR]);
           } else {
-            this.monsterLocations[obj.properties[0].value] = [[obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]];
+            this.monsterLocations[obj.properties[0].value] = [[obj.x * enums.Scale.FACTOR, obj.y * enums.Scale.FACTOR]];
           }
         });
       } else if (layer.name === 'chest_locations') {
         layer.objects.forEach((obj) => {
           if (this.chestLocations[obj.properties[0].value]) {
-            this.chestLocations[obj.properties[0].value].push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
+            this.chestLocations[obj.properties[0].value].push([obj.x * enums.Scale.FACTOR, obj.y * enums.Scale.FACTOR]);
           } else {
-            this.chestLocations[obj.properties[0].value] = [[obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]];
+            this.chestLocations[obj.properties[0].value] = [[obj.x * enums.Scale.FACTOR, obj.y * enums.Scale.FACTOR]];
           }
         });
       }
@@ -264,7 +263,7 @@ export default class GameManager {
 
   setupSpawners() {
     const config = {
-      spawnInterval: Intervals.DEFAULT,
+      spawnInterval: enums.Intervals.DEFAULT,
       limit: 3,
       spawnerType: '',
       id: '',
@@ -272,7 +271,7 @@ export default class GameManager {
     let spawner;
     Object.keys(this.chestLocations).forEach((key) => {
       config.id = `chest-${key}`;
-      config.spawnerType = SpawnerType.CHEST;
+      config.spawnerType = enums.SpawnerType.CHEST;
       spawner = new Spawner(
         config,
         this.chestLocations[key],
@@ -284,7 +283,7 @@ export default class GameManager {
 
     Object.keys(this.monsterLocations).forEach((key) => {
       config.id = `monster-${key}`;
-      config.spawnerType = SpawnerType.MONSTER;
+      config.spawnerType = enums.SpawnerType.MONSTER;
       spawner = new Spawner(
         config,
         this.monsterLocations[key],

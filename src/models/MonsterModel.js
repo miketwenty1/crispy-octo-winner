@@ -1,5 +1,6 @@
 import { v4 } from 'uuid';
-import { randomNumber, Scale, Map } from '../game_manager/utils';
+import {randomNumber} from '../utils';
+import {enums} from '../enums';
 
 export default class MonsterModel {
   constructor(x, y, bitcoin, spawnerId, frame, health, attack, mVelocity, movementIntervalTime) {
@@ -23,10 +24,10 @@ export default class MonsterModel {
   move() {
     const randomAngle = randomNumber(1, 360);
     const radian = (randomAngle * Math.PI) / 180;
-    const monsterPixels = 32 * 2 * Scale.FACTOR;
+    const monsterPixels = 32 * 2 * enums.Scale.FACTOR;
     // also take into account monster width / height in case origin of monster is top/right.
-    const mapWidthScaled = (Map.TileWidth * 32 * Scale.FACTOR);
-    const mapHeightScaled = Map.TileHeight * 32 * Scale.FACTOR;
+    const mapWidthScaled = (enums.Map.TileWidth * 32 * enums.Scale.FACTOR);
+    const mapHeightScaled = enums.Map.TileHeight * 32 * enums.Scale.FACTOR;
     const randomSpeedMultiplier = randomNumber(1, 3);
     let newY = Math.sin(radian) * this.mVelocity * randomSpeedMultiplier;
     let newX = Math.cos(radian) * this.mVelocity * randomSpeedMultiplier;
