@@ -136,6 +136,7 @@ var GameManager = /*#__PURE__*/function () {
 
             _this2.checkSocket(socket);
           } else if (_this2.players[socket.id]) {
+            console.log(playerData.flipX);
             _this2.players[socket.id].x = playerData.x;
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
