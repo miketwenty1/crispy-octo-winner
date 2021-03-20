@@ -10,9 +10,10 @@ export default class PlayerModel {
     this.character = character; // aka frame
 
     this.attrs = {
-      health: PlayerModel.maxHealth,
+      health: 100,
       attack: 10,
       defense: 2,
+      bitcoin: 0,
     };
 
     this.coord = {
@@ -20,7 +21,6 @@ export default class PlayerModel {
       y: 0,
     };
 
-    this.coins = 0;
     this.items = {};
   }
 
@@ -44,11 +44,7 @@ export default class PlayerModel {
     };
   }
 
-  updateCoins(amount) {
-    this.coins += amount;
-  }
-
-  updateItems(item, action='delete') {
+  updateItems(item, action='add') {
     if (action === 'delete') {
       delete this.items[item.id];
     } else {
