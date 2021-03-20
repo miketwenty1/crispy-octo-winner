@@ -34,7 +34,7 @@ export default class PlayerModel {
   }
 
   updateAttrs(key, value) {
-    this.attrs.{key} += value;
+    this.attrs.{key} = value;
   }
 
   updateCoord(x, y) {
