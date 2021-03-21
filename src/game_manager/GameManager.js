@@ -78,20 +78,28 @@ export default class GameManager {
         try {
           // validate token
           const decoded = jwt.verify(token, process.env.JWT_SECRET);
-          // get players name
-          console.log(`new player, with decoded value of ${JSON.stringify(decoded)}`);
-          console.log(`this is the frame going to the server from newPlayer on socket ${frame}`);
-          const { username } = decoded.user;
-          this.spawnPlayer(socket.id, username, frame);
+          // make sure socket isn't being reused
+          // console.log(this.players);
+          // console.log(socket.id);
+          // console.log(!(socket.id in this.players));
+          if (!(socket.id in this.players)) {
+            // get players name
+            console.log(`new player, with decoded value of ${JSON.stringify(decoded)}`);
+            console.log(`this is the frame going to the server from newPlayer on socket ${frame}`);
+            const { username } = decoded.user;
+            this.spawnPlayer(socket.id, username, frame);
 
-          // send players to new player
-          socket.emit('currentPlayers', this.players);
-          // send monsters to new player
-          socket.emit('currentMonsters', this.monsters);
-          // send chests to new player
-          socket.emit('currentChests', this.chests);
-          // send new player to all players
-          socket.broadcast.emit('spawnPlayer', this.players[socket.id]);
+            // send players to new player
+            socket.emit('currentPlayers', this.players);
+            // send monsters to new player
+            socket.emit('currentMonsters', this.monsters);
+            // send chests to new player
+            socket.emit('currentChests', this.chests);
+            // send new player to all players
+            socket.broadcast.emit('spawnPlayer', this.players[socket.id]);
+            // console.log('spawning player');
+            // console.log(this.players[socket.id]);
+          }
         } catch (err) {
           // reject login
           console.log(`err with validating jwt token ${err.message}`);
@@ -107,7 +115,7 @@ export default class GameManager {
           this.players[socket.id].y = playerData.y;
           this.players[socket.id].flipX = playerData.flipX;
           this.players[socket.id].playerAttacking = playerData.playerAttacking;
-          this.players[socket.id].currentDirection = playerData.currentDirection;
+          this.players[socket.id].weaponDirection = playerData.weaponDirection;
 
           // emit message to all players letting them know about the updated position
           this.io.emit('playerMoved', this.players[socket.id]);
@@ -121,7 +129,7 @@ export default class GameManager {
           try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
             const { username, email } = decoded.user;
-  
+
             await ChatModel.create({ email, message });
             // console.log(username, message);
             this.io.emit('newMessage', {
@@ -338,6 +346,8 @@ export default class GameManager {
   checkSocket(socket) {
     if (!this.players[socket.id]) {
       this.io.emit('playerDisconnect', socket.id);
+      console.log('err with validating jwt token during checkSocket()');
+      socket.emit('invalidToken');
     }
   }
 }

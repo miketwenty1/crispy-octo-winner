@@ -107,23 +107,30 @@ var GameManager = /*#__PURE__*/function () {
         socket.on('newPlayer', function (token, frame) {
           try {
             // validate token
-            var decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET); // get players name
+            var decoded = _jsonwebtoken["default"].verify(token, process.env.JWT_SECRET); // make sure socket isn't being reused
+            // console.log(this.players);
+            // console.log(socket.id);
+            // console.log(!(socket.id in this.players));
 
 
-            console.log("new player, with decoded value of ".concat(JSON.stringify(decoded)));
-            console.log("this is the frame going to the server from newPlayer on socket ".concat(frame));
-            var username = decoded.user.username;
+            if (!(socket.id in _this2.players)) {
+              // get players name
+              console.log("new player, with decoded value of ".concat(JSON.stringify(decoded)));
+              console.log("this is the frame going to the server from newPlayer on socket ".concat(frame));
+              var username = decoded.user.username;
 
-            _this2.spawnPlayer(socket.id, username, frame); // send players to new player
+              _this2.spawnPlayer(socket.id, username, frame); // send players to new player
 
 
-            socket.emit('currentPlayers', _this2.players); // send monsters to new player
+              socket.emit('currentPlayers', _this2.players); // send monsters to new player
 
-            socket.emit('currentMonsters', _this2.monsters); // send chests to new player
+              socket.emit('currentMonsters', _this2.monsters); // send chests to new player
 
-            socket.emit('currentChests', _this2.chests); // send new player to all players
+              socket.emit('currentChests', _this2.chests); // send new player to all players
 
-            socket.broadcast.emit('spawnPlayer', _this2.players[socket.id]);
+              socket.broadcast.emit('spawnPlayer', _this2.players[socket.id]); // console.log('spawning player');
+              // console.log(this.players[socket.id]);
+            }
           } catch (err) {
             // reject login
             console.log("err with validating jwt token ".concat(err.message));
@@ -136,12 +143,11 @@ var GameManager = /*#__PURE__*/function () {
 
             _this2.checkSocket(socket);
           } else if (_this2.players[socket.id]) {
-            console.log(playerData.flipX);
             _this2.players[socket.id].x = playerData.x;
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
             _this2.players[socket.id].playerAttacking = playerData.playerAttacking;
-            _this2.players[socket.id].currentDirection = playerData.currentDirection; // emit message to all players letting them know about the updated position
+            _this2.players[socket.id].weaponDirection = playerData.weaponDirection; // emit message to all players letting them know about the updated position
 
             _this2.io.emit('playerMoved', _this2.players[socket.id]);
           }
@@ -433,6 +439,8 @@ var GameManager = /*#__PURE__*/function () {
     value: function checkSocket(socket) {
       if (!this.players[socket.id]) {
         this.io.emit('playerDisconnect', socket.id);
+        console.log('err with validating jwt token during checkSocket()');
+        socket.emit('invalidToken');
       }
     }
   }]);
