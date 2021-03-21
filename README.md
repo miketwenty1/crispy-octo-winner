@@ -11,9 +11,9 @@
 
 # ideas / features
 - score board
-- mobile friendly 
+- mobile friendly
   - (need to add attack button)
-- enter key automatically opens chat menu / enter again will - auto deselect chat -> post message
+- ~~enter key automatically opens chat menu / enter again will - auto deselect chat -> post message~~
 - upgrade weapons / health / stats
 - inventory
 - ~~chat~~
