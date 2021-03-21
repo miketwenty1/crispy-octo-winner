@@ -116,7 +116,7 @@ export default class GameManager {
           this.players[socket.id].flipX = playerData.flipX;
           this.players[socket.id].playerAttacking = playerData.playerAttacking;
           this.players[socket.id].weaponDirection = playerData.weaponDirection;
-
+          // console.log(`yeah ${playerData.weaponDirection.angle}`);
           // emit message to all players letting them know about the updated position
           this.io.emit('playerMoved', this.players[socket.id]);
         }

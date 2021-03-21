@@ -147,7 +147,8 @@ var GameManager = /*#__PURE__*/function () {
             _this2.players[socket.id].y = playerData.y;
             _this2.players[socket.id].flipX = playerData.flipX;
             _this2.players[socket.id].playerAttacking = playerData.playerAttacking;
-            _this2.players[socket.id].weaponDirection = playerData.weaponDirection; // emit message to all players letting them know about the updated position
+            _this2.players[socket.id].weaponDirection = playerData.weaponDirection;
+            console.log("yeah ".concat(playerData.weaponDirection.angle)); // emit message to all players letting them know about the updated position
 
             _this2.io.emit('playerMoved', _this2.players[socket.id]);
           }
