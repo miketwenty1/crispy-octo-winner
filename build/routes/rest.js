@@ -136,7 +136,7 @@ router.post('/login', /*#__PURE__*/function () {
                           var token = _jsonwebtoken["default"].sign({
                             user: body
                           }, process.env.JWT_SECRET, {
-                            expiresIn: 300
+                            expiresIn: 900
                           });
 
                           var refreshToken = _jsonwebtoken["default"].sign({

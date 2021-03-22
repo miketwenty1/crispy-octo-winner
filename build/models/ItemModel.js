@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _uuid = require("uuid");
 
-var ItemModel = function ItemModel(x, y, bitcoin, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
+var ItemModel = function ItemModel(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
   (0, _classCallCheck2["default"])(this, ItemModel);
   this.id = "".concat(spawnerId, "-").concat((0, _uuid.v4)());
   this.spawnerId = spawnerId;

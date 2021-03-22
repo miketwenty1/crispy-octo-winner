@@ -37,15 +37,20 @@ var PlayerModel = /*#__PURE__*/function () {
     this.frame = frame;
     this.playerItems = {};
     this.maxNumberOfItems = 3;
+    this.x = 300;
+    this.y = 300;
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
     key: "canPickupItem",
     value: function canPickupItem() {
-      if (Object.keys(this.playerItems).length < this.maxNumberOfItems) {
+      if (Object.keys(this.playerItems).length > this.maxNumberOfItems) {
+        console.log('too many items');
+        console.log(this.playerItems);
         return false;
       }
 
+      console.log('good, pickup item items');
       return true;
     }
   }, {

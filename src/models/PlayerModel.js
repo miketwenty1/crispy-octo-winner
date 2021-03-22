@@ -18,12 +18,18 @@ export default class PlayerModel {
     this.frame = frame;
     this.playerItems = {};
     this.maxNumberOfItems = 3;
+
+    this.x = 300;
+    this.y = 300;
   }
 
   canPickupItem() {
-    if (Object.keys(this.playerItems).length < this.maxNumberOfItems) {
+    if (Object.keys(this.playerItems).length > this.maxNumberOfItems) {
+      // console.log('too many items');
+      // console.log(this.playerItems);
       return false;
     }
+    console.log(`${this.username} can pick up item`);
     return true;
   }
 

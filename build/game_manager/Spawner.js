@@ -1,5 +1,7 @@
 "use strict";
 
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
 
 Object.defineProperty(exports, "__esModule", {
@@ -16,6 +18,16 @@ var _utils = require("./utils");
 var _ChestModel = _interopRequireDefault(require("../models/ChestModel"));
 
 var _MonsterModel = _interopRequireDefault(require("../models/MonsterModel"));
+
+var _ItemModel = _interopRequireDefault(require("../models/ItemModel"));
+
+var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
+
+function getRandomBonusValues() {
+  // fibonacci sequence
+  var bonusValues = [0, 1, 1, 2, 3, 5, 8, 13, 21];
+  return bonusValues[Math.floor(Math.random() * bonusValues.length)];
+}
 
 var Spawner = /*#__PURE__*/function () {
   function Spawner(config, spawnLocations, addObject, deleteObject, moveObjects) {
@@ -54,7 +66,19 @@ var Spawner = /*#__PURE__*/function () {
         this.spawnChest();
       } else if (this.objectType === _utils.SpawnerType.MONSTER) {
         this.spawnMonster();
+      } else if (this.objectType === _utils.SpawnerType.ITEM) {
+        this.spawnItem();
       }
+    }
+  }, {
+    key: "spawnItem",
+    value: function spawnItem() {
+      // const location = this.pickRandomLocation();
+      var location = [170, 240];
+      var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
+      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandomBonusValues(), getRandomBonusValues(), getRandomBonusValues());
+      this.objectsCreated.push(item);
+      this.addObject(item.id, item);
     }
   }, {
     key: "spawnChest",

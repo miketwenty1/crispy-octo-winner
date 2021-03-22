@@ -1,7 +1,7 @@
 import { v4 } from 'uuid';
 
 export default class ItemModel {
-  constructor(x, y, bitcoin, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
+  constructor(x, y, spawnerId, name, frame, attackValue, defenseValue, healthValue) {
     this.id = `${spawnerId}-${v4()}`;
     this.spawnerId = spawnerId;
     this.x = x;

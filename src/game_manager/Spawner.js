@@ -6,7 +6,14 @@ import {
 } from './utils';
 import ChestModel from '../models/ChestModel';
 import MonsterModel from '../models/MonsterModel';
+import ItemModel from '../models/ItemModel';
+import * as itemData from '../../public/assets/level/tools.json';
 
+function getRandomBonusValues() {
+  // fibonacci sequence
+  const bonusValues = [0, 1, 1, 2, 3, 5, 8, 13, 21];
+  return bonusValues[Math.floor(Math.random() * bonusValues.length)];
+}
 export default class Spawner {
   constructor(config, spawnLocations, addObject, deleteObject, moveObjects) {
     this.id = config.id;
@@ -37,7 +44,27 @@ export default class Spawner {
       this.spawnChest();
     } else if (this.objectType === SpawnerType.MONSTER) {
       this.spawnMonster();
+    } else if (this.objectType === SpawnerType.ITEM) {
+      this.spawnItem();
     }
+  }
+
+  spawnItem() {
+    // const location = this.pickRandomLocation();
+    const location = [170, 240];
+    const randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
+    const item = new ItemModel(
+      location[0],
+      location[1],
+      this.id,
+      randomItem.name,
+      randomItem.frame,
+      getRandomBonusValues(),
+      getRandomBonusValues(),
+      getRandomBonusValues(),
+    );
+    this.objectsCreated.push(item);
+    this.addObject(item.id, item);
   }
 
   spawnChest() {

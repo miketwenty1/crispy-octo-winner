@@ -126,7 +126,9 @@ var GameManager = /*#__PURE__*/function () {
 
               socket.emit('currentMonsters', _this2.monsters); // send chests to new player
 
-              socket.emit('currentChests', _this2.chests); // send new player to all players
+              socket.emit('currentChests', _this2.chests); // send item objects to new players
+
+              socket.emit('currentItems', _this2.items); // send new player to all players
 
               socket.broadcast.emit('spawnPlayer', _this2.players[socket.id]); // console.log('spawning player');
               // console.log(this.players[socket.id]);
@@ -212,6 +214,23 @@ var GameManager = /*#__PURE__*/function () {
             return _ref.apply(this, arguments);
           };
         }());
+        socket.on('pickUpItem', function (itemId) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow pickUpChest we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else if (_this2.items[itemId]) {
+            // check to see if player is elgible to pickup item
+            if (_this2.players[socket.id].canPickupItem()) {
+              _this2.players[socket.id].addItem(_this2.items[itemId]);
+
+              socket.emit('updateItems', _this2.players[socket.id]);
+              socket.broadcast.emit('updatePlayersItems', socket.id, _this2.players[socket.id]); // remove items
+
+              _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
+            }
+          }
+        });
         socket.on('pickUpChest', function (chestId) {
           if (!_this2.players[socket.id]) {
             console.log('somehow pickUpChest we got an undefined player');
@@ -386,7 +405,13 @@ var GameManager = /*#__PURE__*/function () {
         config.spawnerType = _utils.SpawnerType.MONSTER;
         spawner = new _Spawner["default"](config, _this3.monsterLocations[key], _this3.addMonster.bind(_this3), _this3.deleteMonster.bind(_this3), _this3.moveMonsters.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
-      });
+      }); // create item spawner
+
+      config.id = 'item';
+      config.spawnerType = _utils.SpawnerType.ITEM;
+      config.limit = 1;
+      spawner = new _Spawner["default"](config, this.itemLocations, this.addItem.bind(this), this.deleteItem.bind(this));
+      this.spawners[spawner.id] = spawner;
     }
   }, {
     key: "spawnPlayer",

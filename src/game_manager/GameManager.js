@@ -95,6 +95,8 @@ export default class GameManager {
             socket.emit('currentMonsters', this.monsters);
             // send chests to new player
             socket.emit('currentChests', this.chests);
+            // send item objects to new players
+            socket.emit('currentItems', this.items);
             // send new player to all players
             socket.broadcast.emit('spawnPlayer', this.players[socket.id]);
             // console.log('spawning player');
@@ -140,6 +142,22 @@ export default class GameManager {
           } catch (err) {
             console.log(`err with validating jwt token ${err.message}`);
             socket.emit('invalidToken');
+          }
+        }
+      });
+
+      socket.on('pickUpItem', (itemId) => {
+        if (!this.players[socket.id]) {
+          console.log('somehow pickUpChest we got an undefined player');
+          this.checkSocket(socket);
+        } else if (this.items[itemId]) {
+          // check to see if player is elgible to pickup item
+          if (this.players[socket.id].canPickupItem()) {
+            this.players[socket.id].addItem(this.items[itemId]);
+            socket.emit('updateItems', this.players[socket.id]);
+            socket.broadcast.emit('updatePlayersItems', socket.id, this.players[socket.id]);
+            // remove items
+            this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
           }
         }
       });
@@ -302,6 +320,17 @@ export default class GameManager {
       );
       this.spawners[spawner.id] = spawner;
     });
+    // create item spawner
+    config.id = 'item';
+    config.spawnerType = SpawnerType.ITEM;
+    config.limit = 1;
+    spawner = new Spawner(
+      config,
+      this.itemLocations,
+      this.addItem.bind(this),
+      this.deleteItem.bind(this),
+    );
+    this.spawners[spawner.id] = spawner;
   }
 
   spawnPlayer(playerId, username, frame) {

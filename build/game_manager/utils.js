@@ -7,7 +7,8 @@ exports.randomNumber = randomNumber;
 exports.Movement = exports.Map = exports.Intervals = exports.Direction = exports.AUDIO_LEVEL = exports.DIFFICULTY = exports.Mode = exports.Scale = exports.SpawnerType = void 0;
 var SpawnerType = {
   MONSTER: 'MONSTER',
-  CHEST: 'CHEST'
+  CHEST: 'CHEST',
+  ITEM: 'ITEM'
 };
 exports.SpawnerType = SpawnerType;
 
