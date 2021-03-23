@@ -64,10 +64,10 @@ var Spawner = /*#__PURE__*/function () {
     key: "spawnObject",
     value: function spawnObject() {
       if (this.objectType === _utils.SpawnerType.CHEST) {
-        console.log('chest spawning');
+        // console.log('chest spawning');
         this.spawnChest();
       } else if (this.objectType === _utils.SpawnerType.MONSTER) {
-        console.log('monsters spawning');
+        // console.log('monsters spawning');
         this.spawnMonster();
       } else if (this.objectType === _utils.SpawnerType.ITEM) {
         this.spawnItem();

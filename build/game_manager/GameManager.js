@@ -124,8 +124,8 @@ var GameManager = /*#__PURE__*/function () {
 
             if (!(socket.id in _this2.players)) {
               // get players name
-              console.log("new player, with decoded value of ".concat(JSON.stringify(decoded)));
-              console.log("this is the frame going to the server from newPlayer on socket ".concat(frame));
+              console.log("new player, with decoded value of ".concat(JSON.stringify(decoded))); // console.log(`this is the frame going to the server from newPlayer on socket ${frame}`);
+
               var username = decoded.user.username;
 
               _this2.spawnPlayer(socket.id, username, frame); // send players to new player
@@ -435,7 +435,7 @@ var GameManager = /*#__PURE__*/function () {
         config.id = "item-".concat(key);
         config.spawnerType = _utils.SpawnerType.ITEM;
         config.limit = 1;
-        config.spawnInterval = 1000 * 1;
+        config.spawnInterval = 1000 * 30;
         spawner = new _Spawner["default"](config, _this3.itemLocations[key], _this3.addItem.bind(_this3), _this3.deleteItem.bind(_this3));
         _this3.spawners[spawner.id] = spawner;
       });
