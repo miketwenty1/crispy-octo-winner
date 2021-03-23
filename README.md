@@ -14,7 +14,7 @@
 - mobile friendly
   - (need to add attack button)
 - ~~enter key automatically opens chat menu / enter again will - auto deselect chat -> post message~~
-- upgrade weapons / health / stats
+- ~~picking up items to upgrade weapons / health / stats~~
 - inventory
 - ~~chat~~
 - ~~user name~~

@@ -3,7 +3,6 @@ import PlayerModel from '../models/PlayerModel';
 import * as levelData from '../../public/assets/level/large_level.json';
 import Spawner from './Spawner';
 import ChatModel from '../models/ChatModel';
-import * as itemData from '../../public/assets/level/tools.json';
 
 import {
   SpawnerType, Scale, Intervals,
@@ -21,7 +20,8 @@ export default class GameManager {
     this.playerLocations = [];
     this.chestLocations = {};
     this.monsterLocations = {};
-    this.itemLocations = itemData.locations;
+    // itemData.locations;
+    this.itemLocations = {};
 
     this.monsterCount = 0;
   }
@@ -55,6 +55,16 @@ export default class GameManager {
             this.chestLocations[obj.properties[0].value] = [[obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]];
           }
         });
+      } else if (layer.name === 'item_locations') {
+        layer.objects.forEach((obj) => {
+          if (this.itemLocations[obj.properties[0].value]) {
+            this.itemLocations[obj.properties[0].value].push([obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]);
+          } else {
+            this.itemLocations[obj.properties[0].value] = [[obj.x * Scale.FACTOR, obj.y * Scale.FACTOR]];
+          }
+        });
+      } else {
+        console.log(layer.name);
       }
     });
   }
@@ -85,7 +95,7 @@ export default class GameManager {
           if (!(socket.id in this.players)) {
             // get players name
             console.log(`new player, with decoded value of ${JSON.stringify(decoded)}`);
-            console.log(`this is the frame going to the server from newPlayer on socket ${frame}`);
+            // console.log(`this is the frame going to the server from newPlayer on socket ${frame}`);
             const { username } = decoded.user;
             this.spawnPlayer(socket.id, username, frame);
 
@@ -156,11 +166,24 @@ export default class GameManager {
             this.players[socket.id].addItem(this.items[itemId]);
             socket.emit('updateItems', this.players[socket.id]);
             socket.broadcast.emit('updatePlayersItems', socket.id, this.players[socket.id]);
-            // remove items
+            // remove item from spawner
             this.spawners[this.items[itemId].spawnerId].removeObject(itemId);
           }
         }
       });
+
+      socket.on('playerDroppedItem', (itemId) => {
+        if (!this.players[socket.id]) {
+          console.log('somehow pickUpChest we got an undefined player');
+          this.checkSocket(socket);
+        } else {
+          console.log(`item ${itemId} being removed from ${this.players[socket.id].username}`);
+          this.players[socket.id].removeItem(itemId);
+          socket.emit('updateItems', this.players[socket.id]);
+          socket.broadcast.emit('updatePlayersItems', socket.id, this.players[socket.id]);
+        }
+      });
+
       socket.on('pickUpChest', (chestId) => {
         if (!this.players[socket.id]) {
           console.log('somehow pickUpChest we got an undefined player');
@@ -172,6 +195,7 @@ export default class GameManager {
           // updating player balance
           this.players[socket.id].updateBitcoin(bitcoin);
           socket.emit('updateBalance', this.players[socket.id].bitcoin);
+          socket.broadcast.emit('updatePlayersBalance', socket.id, this.players[socket.id].bitcoin);
 
           // remove chest this somehow calls deleteChest event (need to verify this).
           this.spawners[this.chests[chestId].spawnerId].removeObject(chestId);
@@ -320,17 +344,21 @@ export default class GameManager {
       );
       this.spawners[spawner.id] = spawner;
     });
+
     // create item spawner
-    config.id = 'item';
-    config.spawnerType = SpawnerType.ITEM;
-    config.limit = 1;
-    spawner = new Spawner(
-      config,
-      this.itemLocations,
-      this.addItem.bind(this),
-      this.deleteItem.bind(this),
-    );
-    this.spawners[spawner.id] = spawner;
+    Object.keys(this.itemLocations).forEach((key) => {
+      config.id = `item-${key}`;
+      config.spawnerType = SpawnerType.ITEM;
+      config.limit = 1;
+      config.spawnInterval = 1000 * 30;
+      spawner = new Spawner(
+        config,
+        this.itemLocations[key],
+        this.addItem.bind(this),
+        this.deleteItem.bind(this),
+      );
+      this.spawners[spawner.id] = spawner;
+    });
   }
 
   spawnPlayer(playerId, username, frame) {

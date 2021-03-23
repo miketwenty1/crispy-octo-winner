@@ -18,13 +18,10 @@ export default class PlayerModel {
     this.frame = frame;
     this.playerItems = {};
     this.maxNumberOfItems = 3;
-
-    this.x = 300;
-    this.y = 300;
   }
 
   canPickupItem() {
-    if (Object.keys(this.playerItems).length > this.maxNumberOfItems) {
+    if (Object.keys(this.playerItems).length >= this.maxNumberOfItems) {
       // console.log('too many items');
       // console.log(this.playerItems);
       return false;
@@ -35,10 +32,17 @@ export default class PlayerModel {
 
   addItem(item) {
     this.playerItems[item.id] = item;
+
+    this.attack += item.attackBonus;
+    this.defense += item.defenseBonus;
+    this.maxHealth += item.healthBonus;
   }
 
-  removeItem(item) {
-    delete this.playerItems[item.id];
+  removeItem(itemId) {
+    this.attack -= this.playerItems[itemId].attackBonus;
+    this.defense -= this.playerItems[itemId].defenseBonus;
+    this.maxHealth -= this.playerItems[itemId].healthBonus;
+    delete this.playerItems[itemId];
   }
 
   playerAttacked(attack) {

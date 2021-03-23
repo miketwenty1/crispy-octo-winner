@@ -37,31 +37,35 @@ var PlayerModel = /*#__PURE__*/function () {
     this.frame = frame;
     this.playerItems = {};
     this.maxNumberOfItems = 3;
-    this.x = 300;
-    this.y = 300;
   }
 
   (0, _createClass2["default"])(PlayerModel, [{
     key: "canPickupItem",
     value: function canPickupItem() {
-      if (Object.keys(this.playerItems).length > this.maxNumberOfItems) {
-        console.log('too many items');
-        console.log(this.playerItems);
+      if (Object.keys(this.playerItems).length >= this.maxNumberOfItems) {
+        // console.log('too many items');
+        // console.log(this.playerItems);
         return false;
       }
 
-      console.log('good, pickup item items');
+      console.log("".concat(this.username, " can pick up item"));
       return true;
     }
   }, {
     key: "addItem",
     value: function addItem(item) {
       this.playerItems[item.id] = item;
+      this.attack += item.attackBonus;
+      this.defense += item.defenseBonus;
+      this.maxHealth += item.healthBonus;
     }
   }, {
     key: "removeItem",
-    value: function removeItem(item) {
-      delete this.playerItems[item.id];
+    value: function removeItem(itemId) {
+      this.attack -= this.playerItems[itemId].attackBonus;
+      this.defense -= this.playerItems[itemId].defenseBonus;
+      this.maxHealth -= this.playerItems[itemId].healthBonus;
+      delete this.playerItems[itemId];
     }
   }, {
     key: "playerAttacked",

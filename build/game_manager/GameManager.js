@@ -27,8 +27,6 @@ var _Spawner = _interopRequireDefault(require("./Spawner"));
 
 var _ChatModel = _interopRequireDefault(require("../models/ChatModel"));
 
-var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.json"));
-
 var _utils = require("./utils");
 
 // in charge of managing game state for player's game
@@ -43,8 +41,9 @@ var GameManager = /*#__PURE__*/function () {
     this.players = {};
     this.playerLocations = [];
     this.chestLocations = {};
-    this.monsterLocations = {};
-    this.itemLocations = itemData.locations;
+    this.monsterLocations = {}; // itemData.locations;
+
+    this.itemLocations = {};
     this.monsterCount = 0;
   }
 
@@ -82,6 +81,16 @@ var GameManager = /*#__PURE__*/function () {
               _this.chestLocations[obj.properties[0].value] = [[obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]];
             }
           });
+        } else if (layer.name === 'item_locations') {
+          layer.objects.forEach(function (obj) {
+            if (_this.itemLocations[obj.properties[0].value]) {
+              _this.itemLocations[obj.properties[0].value].push([obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]);
+            } else {
+              _this.itemLocations[obj.properties[0].value] = [[obj.x * _utils.Scale.FACTOR, obj.y * _utils.Scale.FACTOR]];
+            }
+          });
+        } else {
+          console.log(layer.name);
         }
       });
     }
@@ -225,10 +234,24 @@ var GameManager = /*#__PURE__*/function () {
               _this2.players[socket.id].addItem(_this2.items[itemId]);
 
               socket.emit('updateItems', _this2.players[socket.id]);
-              socket.broadcast.emit('updatePlayersItems', socket.id, _this2.players[socket.id]); // remove items
+              socket.broadcast.emit('updatePlayersItems', socket.id, _this2.players[socket.id]); // remove item from spawner
 
               _this2.spawners[_this2.items[itemId].spawnerId].removeObject(itemId);
             }
+          }
+        });
+        socket.on('playerDroppedItem', function (itemId) {
+          if (!_this2.players[socket.id]) {
+            console.log('somehow pickUpChest we got an undefined player');
+
+            _this2.checkSocket(socket);
+          } else {
+            console.log("item ".concat(itemId, " being removed from ").concat(_this2.players[socket.id].username));
+
+            _this2.players[socket.id].removeItem(itemId);
+
+            socket.emit('updateItems', _this2.players[socket.id]);
+            socket.broadcast.emit('updatePlayersItems', socket.id, _this2.players[socket.id]);
           }
         });
         socket.on('pickUpChest', function (chestId) {
@@ -242,7 +265,8 @@ var GameManager = /*#__PURE__*/function () {
 
             _this2.players[socket.id].updateBitcoin(bitcoin);
 
-            socket.emit('updateBalance', _this2.players[socket.id].bitcoin); // remove chest this somehow calls deleteChest event (need to verify this).
+            socket.emit('updateBalance', _this2.players[socket.id].bitcoin);
+            socket.broadcast.emit('updatePlayersBalance', socket.id, _this2.players[socket.id].bitcoin); // remove chest this somehow calls deleteChest event (need to verify this).
 
             _this2.spawners[_this2.chests[chestId].spawnerId].removeObject(chestId);
           }
@@ -407,11 +431,14 @@ var GameManager = /*#__PURE__*/function () {
         _this3.spawners[spawner.id] = spawner;
       }); // create item spawner
 
-      config.id = 'item';
-      config.spawnerType = _utils.SpawnerType.ITEM;
-      config.limit = 1;
-      spawner = new _Spawner["default"](config, this.itemLocations, this.addItem.bind(this), this.deleteItem.bind(this));
-      this.spawners[spawner.id] = spawner;
+      Object.keys(this.itemLocations).forEach(function (key) {
+        config.id = "item-".concat(key);
+        config.spawnerType = _utils.SpawnerType.ITEM;
+        config.limit = 1;
+        config.spawnInterval = 1000 * 1;
+        spawner = new _Spawner["default"](config, _this3.itemLocations[key], _this3.addItem.bind(_this3), _this3.deleteItem.bind(_this3));
+        _this3.spawners[spawner.id] = spawner;
+      });
     }
   }, {
     key: "spawnPlayer",

@@ -25,7 +25,7 @@ var itemData = _interopRequireWildcard(require("../../public/assets/level/tools.
 
 function getRandomBonusValues() {
   // fibonacci sequence
-  var bonusValues = [0, 1, 1, 2, 3, 5, 8, 13, 21];
+  var bonusValues = [-5, -3, -2, -1, -1, 0, 0, 0, 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
   return bonusValues[Math.floor(Math.random() * bonusValues.length)];
 }
 
@@ -42,6 +42,7 @@ var Spawner = /*#__PURE__*/function () {
     this.objectsCreated = [];
     this.start();
     this.moveObjects = moveObjects;
+    this.num = 0;
   }
 
   (0, _createClass2["default"])(Spawner, [{
@@ -63,8 +64,10 @@ var Spawner = /*#__PURE__*/function () {
     key: "spawnObject",
     value: function spawnObject() {
       if (this.objectType === _utils.SpawnerType.CHEST) {
+        console.log('chest spawning');
         this.spawnChest();
       } else if (this.objectType === _utils.SpawnerType.MONSTER) {
+        console.log('monsters spawning');
         this.spawnMonster();
       } else if (this.objectType === _utils.SpawnerType.ITEM) {
         this.spawnItem();
@@ -73,11 +76,13 @@ var Spawner = /*#__PURE__*/function () {
   }, {
     key: "spawnItem",
     value: function spawnItem() {
-      // const location = this.pickRandomLocation();
-      var location = [170, 240];
+      var location = this.pickRandomLocation('item', 1);
       var randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
-      var item = new _ItemModel["default"](location[0], location[1], this.id, randomItem.name, randomItem.frame, getRandomBonusValues(), getRandomBonusValues(), getRandomBonusValues());
-      this.objectsCreated.push(item);
+      var item = new _ItemModel["default"](location[0], location[1], // 300,
+      // 300,
+      this.id, randomItem.name, randomItem.frame, getRandomBonusValues(), getRandomBonusValues(), getRandomBonusValues());
+      this.objectsCreated.push(item); // console.log(item);
+
       this.addObject(item.id, item);
     }
   }, {
@@ -100,10 +105,17 @@ var Spawner = /*#__PURE__*/function () {
       this.id, monsterNum, health, attack, mVelocity, _utils.Intervals.Movement.MONSTER, _utils.Intervals.ResetLocation.MONSTER);
       this.objectsCreated.push(monster);
       this.addObject(monster.id, monster);
-    }
+    } // num is used to help limit how many times it looks for a valid location
+
   }, {
     key: "pickRandomLocation",
     value: function pickRandomLocation(who, num) {
+      if (who === 'item') {
+        this.num += 1; // console.log(this.num);
+      } // console.log(`${who}, ${this.spawnLocations}`);
+      // console.log(this.spawnLocations);
+
+
       var location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)]; // some used in an interesting way here
 
       var invalidLocation = this.objectsCreated.some(function (obj) {
@@ -114,8 +126,8 @@ var Spawner = /*#__PURE__*/function () {
         return false;
       });
 
-      if (invalidLocation) {
-        console.log("location from ".concat(who, " with num: ").concat(num));
+      if (invalidLocation && num < 10) {
+        // console.log(`location from ${who} with num: ${num}`);
         return this.pickRandomLocation(who, num + 1);
       }
 

@@ -11,7 +11,7 @@ import * as itemData from '../../public/assets/level/tools.json';
 
 function getRandomBonusValues() {
   // fibonacci sequence
-  const bonusValues = [0, 1, 1, 2, 3, 5, 8, 13, 21];
+  const bonusValues = [-5, -3, -2, -1, -1, 0, 0, 0, 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55];
   return bonusValues[Math.floor(Math.random() * bonusValues.length)];
 }
 export default class Spawner {
@@ -26,6 +26,7 @@ export default class Spawner {
     this.objectsCreated = [];
     this.start();
     this.moveObjects = moveObjects;
+    this.num = 0;
   }
 
   start() {
@@ -41,8 +42,10 @@ export default class Spawner {
 
   spawnObject() {
     if (this.objectType === SpawnerType.CHEST) {
+      // console.log('chest spawning');
       this.spawnChest();
     } else if (this.objectType === SpawnerType.MONSTER) {
+      // console.log('monsters spawning');
       this.spawnMonster();
     } else if (this.objectType === SpawnerType.ITEM) {
       this.spawnItem();
@@ -50,12 +53,13 @@ export default class Spawner {
   }
 
   spawnItem() {
-    // const location = this.pickRandomLocation();
-    const location = [170, 240];
+    const location = this.pickRandomLocation('item', 1);
     const randomItem = itemData.items[Math.floor(Math.random() * itemData.items.length)];
     const item = new ItemModel(
       location[0],
       location[1],
+      // 300,
+      // 300,
       this.id,
       randomItem.name,
       randomItem.frame,
@@ -64,6 +68,7 @@ export default class Spawner {
       getRandomBonusValues(),
     );
     this.objectsCreated.push(item);
+    // console.log(item);
     this.addObject(item.id, item);
   }
 
@@ -96,7 +101,14 @@ export default class Spawner {
     this.addObject(monster.id, monster);
   }
 
+  // num is used to help limit how many times it looks for a valid location
   pickRandomLocation(who, num) {
+    if (who === 'item') {
+      this.num += 1;
+      // console.log(this.num);
+    }
+    // console.log(`${who}, ${this.spawnLocations}`);
+    // console.log(this.spawnLocations);
     const location = this.spawnLocations[Math.floor(Math.random() * this.spawnLocations.length)];
     // some used in an interesting way here
     const invalidLocation = this.objectsCreated.some((obj) => {
@@ -105,8 +117,8 @@ export default class Spawner {
       }
       return false;
     });
-    if (invalidLocation) {
-      console.log(`location from ${who} with num: ${num}`);
+    if (invalidLocation && num < 10) {
+      // console.log(`location from ${who} with num: ${num}`);
       return this.pickRandomLocation(who, num + 1);
     }
     return location;
